@@ -1,0 +1,4 @@
+.DS_Store
+node_modules/
+public/
+magic-board.sublime-workspace
