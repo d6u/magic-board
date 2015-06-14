@@ -83,11 +83,7 @@ export default class RouteRegistry {
     let matcher = parsePattern(pattern);
 
     if (!r) {
-      r = {
-        matcher: matcher,
-        callbacks: []
-      };
-
+      r = { matcher, callbacks: [] };
       this.routes.set(key, r);
     }
 
@@ -103,7 +99,7 @@ export default class RouteRegistry {
   }
 
   deregister(key, cb) {
-    let route = this.routes[key];
+    let route = this.routes.get(key);
     route.callbacks = route.callbacks.filter(e => e !== cb );
   }
 
