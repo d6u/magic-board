@@ -23,7 +23,7 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    sharedRegistry.register('/items/:id', (m) => console.log(m));
+    sharedRegistry.register('/items/:id/:thing', (m) => console.log(m));
   },
 
   render() {

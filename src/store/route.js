@@ -57,16 +57,33 @@ function parsePattern(pattern) {
   };
 }
 
+function extractHash(url) {
+  let i = url.indexOf('#');
+  if (i > -1) {
+    return url.slice(i + 1);
+  }
+  return '';
+}
+
 export default class RouteRegistry {
 
   constructor() {
     this.routes = new Map();
 
-    window.addEventListener('hashchange', () => {
+    window.addEventListener('hashchange', ({ oldURL, newURL }) => {
+      let oldHash = extractHash(oldURL);
+      let newHash = extractHash(newURL);
+
       for (let [, obj] of this.routes) {
-        let r = obj.matcher(hash());
-        if (r) {
-          obj.callbacks.forEach(cb => cb(r));
+        let oldParams = obj.matcher(oldHash);
+        let newParams = obj.matcher(newHash);
+
+        if (oldParams) {
+          obj.callbacks.forEach(cb => cb({ type: 'leave', ...oldParams }));
+        }
+
+        if (newParams) {
+          obj.callbacks.forEach(cb => cb({ type: 'enter', ...newParams }));
         }
       }
     }, false);
@@ -79,8 +96,8 @@ export default class RouteRegistry {
    */
   register(pattern, cb) {
     let key = pattern.toString();
-    let r = this.routes.get(key);
     let matcher = parsePattern(pattern);
+    let r = this.routes.get(key);
 
     if (!r) {
       r = { matcher, callbacks: [] };
@@ -92,7 +109,7 @@ export default class RouteRegistry {
     // Trigger if already in route
     let m = matcher(hash());
     if (m) {
-      cb(m);
+      cb({ type: 'enter', ...m });
     }
 
     return key;

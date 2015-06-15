@@ -28,7 +28,7 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         loader: 'babel',
         query: {
-          optional: ['runtime', 'es7.asyncFunctions'],
+          optional: ['runtime', 'es7.asyncFunctions', 'es7.objectRestSpread'],
         },
       },
     ],
