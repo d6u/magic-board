@@ -15,6 +15,7 @@
     "extract-text-webpack-plugin": "^0.8.1",
     "node-libs-browser": "^0.5.2",
     "node-sass": "^3.1.2",
+    "onchange": "^1.1.0",
     "postcss-loader": "^0.4.4",
     "postcss-local-scope": "0.0.5",
     "react": "^0.13.3",
@@ -23,8 +24,10 @@
     "webpack": "^1.9.10"
   },
   "scripts": {
-    "build": "rm -rf public && webpack && cp src/index.html public",
+    "build:reset": "rm -rf public && mkdir -p public",
+    "build:assets": "cp src/index.html public && webpack",
+    "build": "npm run build:reset && npm run build:assets",
     "predev": "npm run build",
-    "dev": "browser-sync start --files 'public/*' --server 'public' & webpack -w"
+    "dev": "browser-sync start --files 'public/*' --server 'public' & webpack -w & onchange 'src/*.html' -- cp src/index.html public"
   }
 }
