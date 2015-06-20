@@ -1,15 +1,13 @@
 html {
-  height: 100%;
 }
 
 body {
   font-family: 'Roboto', sans-serif;
-  height: 100%;
   background-color: black;
   color: white;
 }
 
-#app {
-  height: 100%;
+:global .container {
+  height: 100vh;
   position: relative;
 }

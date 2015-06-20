@@ -1,5 +1,4 @@
 import React from 'react';
-import pageStyle from './page.scss';
 import joinStyle from './join.scss';
 
 export default React.createClass({
@@ -36,14 +35,16 @@ export default React.createClass({
       );
     })
     return (
-      <div className={ `${pageStyle['page__inner']} ${joinStyle['join-page']}` }>
+      <div className={ `${pageStyle['page__inner']}` }>
         <input
           type='text'
           pattern='[0-9]*'
           className={ joinStyle['join-page__input'] }
           ref='input'
           onChange={ this.inputChanged } />
+        <div className={ `${joinStyle['join-page']}` }></div>
         { boxes }
+        <button className="">back</button>
       </div>
     );
   },

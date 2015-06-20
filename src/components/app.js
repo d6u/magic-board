@@ -2,11 +2,8 @@ import router from '../store/route';
 import React from 'react';
 import Home from './home';
 import Join from './join';
-import pageStyle from './page.scss';
-
-function randomId() {
-  return Math.floor(Math.random() * 10000);
-}
+import Game from './game';
+import style from './app.scss';
 
 export default React.createClass({
 
@@ -20,43 +17,28 @@ export default React.createClass({
 
   componentDidMount() {
     router.register('/', event => {
-      if (event.type === 'enter') {
-        this.setState({
-          home: true,
-          game: false,
-          join: false,
-        });
-      }
+      this.setState({home: event.type === 'enter'});
     });
 
-    router.register('/:id', event => {
-      if (event.type === 'enter') {
-        if (event.id === 'join') {
-          this.setState({
-            home: false,
-            game: false,
-            join: true,
-          });
-        }
-        else {
-          this.setState({
-            home: false,
-            game: true,
-            join: false,
-          });
-        }
-      }
+    router.register('/join', event => {
+      this.setState({join: event.type === 'enter'});
+    });
+
+    router.register('/game/:id', event => {
+      this.setState({game: event.type === 'enter'});
     });
   },
 
   render() {
     let home = this.state.home ? <Home /> : null;
     let join = this.state.join ? <Join /> : null;
+    let game = this.state.game ? <Game /> : null;
 
     return (
-      <div className={ pageStyle['page'] }>
+      <div className={ style['app'] }>
         { home }
         { join }
+        { game }
       </div>
     );
   },
