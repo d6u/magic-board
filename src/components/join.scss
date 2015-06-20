@@ -7,18 +7,21 @@
   justify-content: center;
 }
 
+.join-page__input {
+  position: fixed;
+  top: -100px;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
 .join-page__box {
   width: 50px;
   height: 50px;
   border: 2px solid white;
   margin: 5px;
   cursor: pointer;
-}
-
-.join-input {
-  position: fixed;
-  top: -100px;
-  opacity: 0;
-  width: 0;
-  height: 0;
+  font-size: 30px;
+  line-height: 50px;
+  text-align: center;
 }
