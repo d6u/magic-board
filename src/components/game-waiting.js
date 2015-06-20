@@ -4,10 +4,19 @@ import style from './game-waiting.scss';
 export default React.createClass({
 
   render() {
+
+    let digits = this.props.gameId.split('');
+
+    while (digits.length < 4) {
+      digits.unshift('0');
+    }
+
+    let digitBoxes = digits.map(d => <div className={style['game-id__box']}>{d}</div>);
+
     return (
-      <h1 className={ style['game-waiting'] }>
-        { this.props.gameId }
-      </h1>
+      <div className={ style['game-id'] }>
+        { digitBoxes }
+      </div>
     );
   },
 

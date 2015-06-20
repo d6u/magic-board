@@ -34,7 +34,7 @@ export default React.createClass({
 
   render() {
 
-    let waiting = this.state.status === 'waiting' ? <GameWaiting gameId={this.state.id} /> : null;
+    let waiting = this.state.status === 'waiting' ? <GameWaiting gameId={this.state.id}/> : null;
 
     return (
       <div className={ style['game'] }>

@@ -1,3 +1,16 @@
-.game-waiting {
+.game-id {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
 
+.game-id__box {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  font-size: 45px;
+  line-height: 50px;
+  text-align: center;
 }
