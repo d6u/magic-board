@@ -23,6 +23,10 @@ export default React.createClass({
     this.input().focus();
   },
 
+  back() {
+    location.hash = '/';
+  },
+
   render() {
     let boxes = [0, 1, 2, 4].map( n => {
       return (
@@ -38,7 +42,7 @@ export default React.createClass({
         <div className={ style['join__boxes'] }>
           { boxes }
         </div>
-        <button className={ style['join__back'] }>back</button>
+        <button className={ style['join__back'] } onClick={ this.back }>back</button>
       </div>
     );
   },

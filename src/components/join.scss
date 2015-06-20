@@ -1,6 +1,7 @@
 @import '../style/mixins';
 
 .join {
+  overflow: hidden; // Contain child margin-top
 }
 
 .join__boxes {
