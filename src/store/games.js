@@ -72,11 +72,14 @@ class GameStore {
 
   async newGame() {
     let id = await randomGameId();
-    this.game = gamesRef.child(id);
-    this.game.set({
+    gamesRef.child(id).set({
       status: 'waiting'
     });
     this.trigger('new game created', { id });
+  }
+
+  joinGame(id) {
+    this.game = gamesRef.child(id);
   }
 
 }

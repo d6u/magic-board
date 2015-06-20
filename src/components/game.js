@@ -1,58 +1,44 @@
 import React from 'react';
 import router from '../store/route';
-import { games } from '../store/games';
-import joinStyle from './game.scss';
+import gamesStore from '../store/games';
+import GameWaiting from './game-waiting';
+import style from './game.scss';
 
 export default React.createClass({
 
   getInitialState() {
-    return { isWaiting: true };
+    return {
+      status: '',
+      id: null,
+    };
   },
 
   componentDidMount() {
-    router.register('/:id', event => {
-      if (/^\d+$/.test(event.id)) {
-        if (event.type === 'enter') {
-          this.gameId = event.id;
-          this.game = games.child(event.id);
-          this.gameChangeCallback = ss => this.gameChanged(ss.val());
-          this.game.on('value', this.gameChangeCallback);
-        }
+    router.register('/game/:id', event => {
+      if (event.type === 'enter') {
+        gamesStore.joinGame(event.id);
+        this.setState({
+          id: event.id
+        });
+        this.registerGameChangeHandlers();
       }
     });
   },
 
-  componentWillUnmount() {
-    console.log('123');
-    this.game.off('value', this.gameChangeCallback);
-  },
-
-  gameChanged(detail) {
-    if (!detail) {
-      this.game.set({
-        status: 'waiting'
-      });
-    }
-    else {
-      switch (detail.status) {
-        case 'waiting':
-          this.setState({
-            isWaiting: true,
-            gameId: this.gameId
-          });
-          break;
-        case 'gaming':
-          break;
-        default:
-          // Do nothing
-      }
-    }
+  registerGameChangeHandlers() {
+    gamesStore.game.on('value', ss => {
+      let g = ss.val();
+      this.setState(g);
+    });
   },
 
   render() {
+
+    let waiting = this.state.status === 'waiting' ? <GameWaiting gameId={this.state.id} /> : null;
+
     return (
-      <div className={ pageStyle['page__inner'] }>
-        { this.state.gameId }
+      <div className={ style['game'] }>
+        { waiting }
       </div>
     );
   },
