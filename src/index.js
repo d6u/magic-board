@@ -1,5 +1,7 @@
 import React from 'react';
-import style from './global.scss';
 import App from './components/app';
+import style from './global.scss';
+
+React.initializeTouchEvents(true);
 
 React.render(<App />, document.getElementById('app'));

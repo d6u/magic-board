@@ -11,13 +11,5 @@ body {
 
 #app {
   height: 100%;
-  text-align: center;
-
-  &::before {
-    content: '';
-    display: inline-block;
-    height: 100%;
-    margin-left: -0.25em;
-    vertical-align: middle;
-  }
+  position: relative;
 }

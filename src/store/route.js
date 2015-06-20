@@ -65,10 +65,12 @@ function extractHash(url) {
   return '';
 }
 
-export default class RouteRegistry {
+class RouteRegistry {
 
   constructor() {
     this.routes = new Map();
+
+    this.formatRoot();
 
     window.addEventListener('hashchange', ({ oldURL, newURL }) => {
       let oldHash = extractHash(oldURL);
@@ -87,6 +89,12 @@ export default class RouteRegistry {
         }
       }
     }, false);
+  }
+
+  formatRoot() {
+    if (!location.hash) {
+      location.hash = '/';
+    }
   }
 
   /**
@@ -122,4 +130,4 @@ export default class RouteRegistry {
 
 }
 
-export const sharedRegistry = new RouteRegistry();
+export default new RouteRegistry();
