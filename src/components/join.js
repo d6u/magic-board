@@ -1,4 +1,5 @@
 import React from 'react';
+import gamesStore from '../store/games';
 import style from './join.scss';
 
 export default React.createClass({
@@ -13,9 +14,22 @@ export default React.createClass({
 
   inputChanged() {
     let input = this.input();
+
+    if (input.value.length === 4) {
+      gamesStore.hasGame(input.value)
+        .then(has => {
+          if (has) {
+            location.hash = `/game/${input.value}`;
+          } else {
+            alert('No game found!');
+          }
+        });
+    }
+
     if (input.value.length > 4) {
       input.value = input.value.slice(0, 4);
     }
+
     this.setState({ value: input.value });
   },
 

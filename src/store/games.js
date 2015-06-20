@@ -90,6 +90,14 @@ class GameStore {
     this.game = gamesRef.child(id);
   }
 
+  hasGame(id) {
+    return new Promise(res => {
+      gamesRef.child(id).once('value', ss => {
+        res(ss.val() != null);
+      });
+    });
+  }
+
 }
 
 export default new GameStore();
