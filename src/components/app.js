@@ -1,5 +1,6 @@
-import router from '../store/route';
 import React from 'react';
+import router from '../store/route';
+import gamesStore from '../store/games';
 import Home from './home';
 import Join from './join';
 import Game from './game';
@@ -26,6 +27,10 @@ export default React.createClass({
 
     router.register('/game/:id', event => {
       this.setState({game: event.type === 'enter'});
+    });
+
+    gamesStore.register('new game created', ({id}) => {
+      location.hash = `/game/${id}`;
     });
   },
 

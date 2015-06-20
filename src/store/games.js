@@ -1,21 +1,84 @@
-export let games = new Firebase('https://glowing-torch-4886.firebaseio.com/games');
+const gamesRef = new Firebase('https://glowing-torch-4886.firebaseio.com/games');
 
-function randomId() {
+function random() {
   return Math.floor(Math.random() * 10000);
 }
 
 function allGames() {
-  return new Promise(resolve => {
-    games.once( 'value', data => resolve(data.val()) );
+  return new Promise(res => {
+    gamesRef.once( 'value', data => res(data.val()) );
   });
 }
 
-export async function newGame() {
+async function randomGameId() {
+  let games = await allGames() || {};
   let id;
-  let games;
+
   do {
-    id = randomId();
-    games = await allGames();
+    id = random();
   } while (games[id]);
+
   return id;
 }
+
+class GameStore {
+
+  constructor() {
+    this.game = null;
+    this.eventHandlers = new Map();
+  }
+
+  /**
+   * Register event callbacks
+   *
+   * All possible event names:
+   *   'new game created'   -> waiting screen - (id: string)
+   *   'all players joined' -> roll           -
+   *   'game starts'        -> counting lives
+   *   'game ends'          -> results
+   *
+   * @param  {string}   name
+   * @param  {Function} handler
+   * @return {void}
+   */
+  register(name, handler) {
+    let handlers = this.eventHandlers.get(name);
+
+    if (!handlers) {
+      handlers = new Set();
+      this.eventHandlers.set(name, handlers);
+    }
+
+    handlers.add(handler);
+  }
+
+  deregister(name, handler) {
+    let handlers = this.eventHandlers.get(name);
+
+    if (handlers) {
+      handlers.delete(handler);
+    }
+  }
+
+  trigger(name, data) {
+    let handlers = this.eventHandlers.get(name);
+
+    if (handlers) {
+      for (let h of handlers) {
+        h(data);
+      }
+    }
+  }
+
+  async newGame() {
+    let id = await randomGameId();
+    this.game = gamesRef.child(id);
+    this.game.set({
+      status: 'waiting'
+    });
+    this.trigger('new game created', { id });
+  }
+
+}
+
+export default new GameStore();

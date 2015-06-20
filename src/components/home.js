@@ -1,5 +1,5 @@
 import React from 'react';
-import { newGame } from '../store/games';
+import gamesStore from '../store/games';
 import style from './home.scss';
 
 export default React.createClass({
@@ -8,9 +8,8 @@ export default React.createClass({
     location.hash = '/join';
   },
 
-  async newGame() {
-    let id = await newGame();
-    location.hash = `/game/${id}`;
+  newGame() {
+    gamesStore.newGame();
   },
 
   render() {
