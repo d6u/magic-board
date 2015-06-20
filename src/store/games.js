@@ -4,6 +4,14 @@ function random() {
   return Math.floor(Math.random() * 10000);
 }
 
+function zeroFill(n) {
+  let digits = n.toString(10).split('');
+  while (digits.length < 4) {
+    digits.unshift('0');
+  }
+  return digits.join('');
+}
+
 function allGames() {
   return new Promise(res => {
     gamesRef.once( 'value', data => res(data.val()) );
@@ -15,7 +23,7 @@ async function randomGameId() {
   let id;
 
   do {
-    id = random();
+    id = zeroFill(random());
   } while (games[id]);
 
   return id;
