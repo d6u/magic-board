@@ -1,5 +1,5 @@
 import React from 'react';
-import joinStyle from './join.scss';
+import style from './join.scss';
 
 export default React.createClass({
 
@@ -26,25 +26,19 @@ export default React.createClass({
   render() {
     let boxes = [0, 1, 2, 4].map( n => {
       return (
-        <div
-          className={ joinStyle['join-page__box'] }
-          onClick={ this.boxTapped }
-          key={ n }>
+        <div className={ style['join__box'] } onClick={ this.boxTapped } key={ n }>
           { this.state.value[n] }
         </div>
       );
-    })
+    });
+
     return (
-      <div className={ `${pageStyle['page__inner']}` }>
-        <input
-          type='text'
-          pattern='[0-9]*'
-          className={ joinStyle['join-page__input'] }
-          ref='input'
-          onChange={ this.inputChanged } />
-        <div className={ `${joinStyle['join-page']}` }></div>
-        { boxes }
-        <button className="">back</button>
+      <div className={ style['join'] }>
+        <input type='text' pattern='[0-9]*' className={ style['hidden-input'] } ref='input' onChange={ this.inputChanged } />
+        <div className={ style['join__boxes'] }>
+          { boxes }
+        </div>
+        <button className={ style['join__back'] }>back</button>
       </div>
     );
   },
