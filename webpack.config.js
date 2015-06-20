@@ -17,7 +17,7 @@ module.exports = {
         loader: ExtractTextPlugin.extract(
           'style-loader',
           [
-            'css-loader?localIdentName=[local]__[hash:base64:5]',
+            'css-loader?modules&localIdentName=[local]---[hash:hex:5]',
             'postcss-loader',
             'sass-loader?outputStyle=expanded'
           ].join('!')
@@ -36,7 +36,6 @@ module.exports = {
 
   postcss: [
     require('autoprefixer-core'),
-    require('postcss-local-scope'),
   ],
 
   plugins: [
