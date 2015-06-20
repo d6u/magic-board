@@ -28,7 +28,7 @@ export default React.createClass({
   },
 
   render() {
-    let boxes = [0, 1, 2, 4].map( n => {
+    let boxes = [0, 1, 2, 3].map( n => {
       return (
         <div className={ style['join__box'] } onClick={ this.boxTapped } key={ n }>
           { this.state.value[n] }
