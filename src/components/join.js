@@ -1,5 +1,6 @@
 import React from 'react';
 import style from './join.scss';
+import * as NavAction from '../view-actions/nav';
 
 export default React.createClass({
 
@@ -37,7 +38,7 @@ export default React.createClass({
   },
 
   back() {
-    location.hash = '/';
+    NavAction.navTo('/');
   },
 
   render() {

@@ -1,10 +1,11 @@
 import React from 'react';
 import style from './home.scss';
+import * as NavAction from '../view-actions/nav';
 
 export default React.createClass({
 
   join() {
-    location.hash = '/join';
+    NavAction.navTo('/join');
   },
 
   newGame() {
