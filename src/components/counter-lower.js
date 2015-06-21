@@ -31,7 +31,9 @@ export default React.createClass({
 
     return (
       <div className={containerClass}>
+        <button className={style['board__life-btn']}>+</button>
         <h1 className={style['board__counter']}>{counter}</h1>
+        <button className={style['board__life-btn']}>-</button>
       </div>
     );
   },
