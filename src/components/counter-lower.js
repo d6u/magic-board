@@ -2,6 +2,7 @@ import React from 'react';
 import style from './game-board.scss';
 import store from '../store/store';
 import * as GameAction from '../view-actions/game';
+import InlineSvg from './inline-svg';
 
 export default React.createClass({
 
@@ -30,10 +31,14 @@ export default React.createClass({
     }
 
     return (
-      <div className={containerClass}>
-        <button className={style['board__life-btn']}>+</button>
+      <div className={containerClass} ref='root'>
+        <button className={style['board__life-btn']}>
+          <InlineSvg className={style['board__life-btn-icon']} name='plus'/>
+        </button>
         <h1 className={style['board__counter']}>{counter}</h1>
-        <button className={style['board__life-btn']}>-</button>
+        <button className={style['board__life-btn']}>
+          <InlineSvg className={style['board__life-btn-icon']} name='minus'/>
+        </button>
       </div>
     );
   },

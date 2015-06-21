@@ -56,13 +56,26 @@
   color: white;
   width: 40px;
   height: 40px;
-  font-size: 40px;
-  line-height: 40px;
-  text-align: center;
+  padding: 3px;
 
   .board--white & {
     border-color: black;
     background-color: white;
     color: black;
+  }
+}
+
+.board__life-btn-icon {
+  svg {
+    width: 32px;
+    height: 32px;
+  }
+  :global .root {
+    fill: white;
+  }
+  .board--white & {
+    :global .root {
+      fill: black;
+    }
   }
 }

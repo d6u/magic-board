@@ -35,6 +35,10 @@ module.exports = {
           ].join('!')
         ),
       },
+      {
+        test: /\.svg$/,
+        loader: 'raw',
+      },
     ],
   },
 
