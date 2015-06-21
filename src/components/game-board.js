@@ -11,21 +11,53 @@ export default React.createClass({
     return store.game;
   },
 
-  render() {
-    let upperClassName = style['board__upper'];
-    let lowerClassName = style['board__lower'];
+  upper() {
+    if (!store.player) return;
 
-    lowerClassName += ` ${style['board--white']}`;
+    let containerClass;
+    let counter;
+
+    if (store.player.player_id === this.state.player_black) {
+      containerClass = `${style['board__upper']} ${style['board--white']}`;
+      counter = this.state.white_roll;
+    } else {
+      containerClass = style['board__upper'];
+      counter = this.state.black_roll;
+    }
 
     return (
-      <div className={style['board']}>
-        <div className={upperClassName}>
-          <h1 className={style['board__counter']}>{this.state.white_roll}</h1>
-        </div>
+      <div className={containerClass}>
+        <h1 className={style['board__counter']}>{counter}</h1>
+      </div>
+    );
+  },
 
-        <div className={lowerClassName}>
-          <h1 className={style['board__counter']}>{this.state.black_roll}</h1>
-        </div>
+  lower() {
+    if (!store.player) return;
+
+    let containerClass;
+    let counter;
+
+    if (store.player.player_id === this.state.player_white) {
+      containerClass = `${style['board__lower']} ${style['board--white']}`;
+      counter = this.state.white_roll;
+    } else {
+      containerClass = style['board__lower'];
+      counter = this.state.black_roll;
+    }
+
+    return (
+      <div className={containerClass}>
+        <h1 className={style['board__counter']}>{counter}</h1>
+      </div>
+    );
+  },
+
+  render() {
+    return (
+      <div className={style['board']}>
+        {this.upper()}
+        {this.lower()}
       </div>
     );
   },
