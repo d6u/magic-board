@@ -10,3 +10,10 @@ export function joinGame(game_id) {
       navTo(`/game/${game_id}`);
     });
 }
+
+export function newGame() {
+  firebaseService.newGame()
+    .then(function (id) {
+      navTo(`/game/${id}`);
+    });
+}

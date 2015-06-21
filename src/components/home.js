@@ -9,14 +9,14 @@ export default React.createClass({
   },
 
   newGame() {
-    gamesStore.newGame();
+    NavAction.newGame();
   },
 
   render() {
     return (
-      <div className={ style['home'] }>
-        <button className={ style['home__button'] } onClick={ this.newGame }>New</button>
-        <button className={ style['home__button'] } onClick={ this.join }>Join</button>
+      <div className={style['home']}>
+        <button className={style['home__button']} onClick={this.newGame}>New</button>
+        <button className={style['home__button']} onClick={this.join}>Join</button>
       </div>
     );
   },

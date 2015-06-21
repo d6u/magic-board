@@ -1,10 +1,29 @@
 import config from '../config.json';
 import * as PlayerAction from '../service-actions/player';
 import * as GameAction from '../service-actions/game';
+import * as GameUtil from '../util/game';
 
 const firebase = new Firebase(config.firebase_url);
 const playersRef = firebase.child('players');
 const gamesRef = firebase.child('games');
+
+function gameExists(id) {
+  return new Promise(res => {
+    gamesRef.child(id).once('value', ds => res(ds.exists()));
+  });
+}
+
+async function randomGameId() {
+  let id;
+  let isExist;
+
+  do {
+    id = GameUtil.zeroFill(GameUtil.random());
+    isExist = await gameExists(id);
+  } while (isExist);
+
+  return id;
+}
 
 class FirebaseService {
 
@@ -36,6 +55,14 @@ class FirebaseService {
           }
         });
     });
+  }
+
+  async newGame() {
+    let id = await randomGameId();
+    gamesRef.child(id).set({
+      status: 'waiting'
+    });
+    return id;
   }
 
   joinGame(id) {
