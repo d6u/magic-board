@@ -1,7 +1,7 @@
-import React       from 'react';
+import React from 'react';
 import GameWaiting from './game-waiting';
-import GameRolling from './game-rolling';
-import style       from './game.scss';
+import GameBoard from './game-board';
+import style from './game.scss';
 import store from '../store/store';
 
 export default React.createClass({
@@ -14,13 +14,13 @@ export default React.createClass({
   },
 
   render() {
-    let waiting = this.state.status === 'waiting' ? <GameWaiting gameId={this.state.id}/> : null;
-    let rolling = this.state.status === 'rolling' ? <GameRolling gameId={this.state.id}/> : null;
+    let waiting = <GameWaiting gameId={this.state.id}/>;
+    let board = <GameBoard />;
 
     return (
       <div className={style['game']}>
-        {waiting}
-        {rolling}
+        {this.state.status === 'waiting' ? waiting : null}
+        {this.state.status !== 'waiting' ? board : null}
       </div>
     );
   },

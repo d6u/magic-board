@@ -1,0 +1,31 @@
+.board {
+}
+
+.board__upper {
+  height: 35vh;
+}
+
+.board__lower {
+  height: 65vh;
+}
+
+.board__upper,
+.board__lower {
+  box-shadow: 0 0 10px 5px rgba(black, 0.4);
+  position: relative;
+  z-index: 10;
+
+  &.board--white {
+    background-color: white;
+    z-index: 5;
+    color: black;
+  }
+}
+
+.board__counter {
+  text-align: center;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 80px;
+}

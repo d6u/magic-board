@@ -82,10 +82,8 @@ class FirebaseService {
         this.game.update({
           player_white: store.player.player_id,
           status: 'rolling',
-          roll_results: {
-            black_roll,
-            white_roll
-          },
+          black_roll,
+          white_roll
         });
       }
     });
