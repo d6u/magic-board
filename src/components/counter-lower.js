@@ -19,10 +19,11 @@ export default React.createClass({
     }
 
     switch (this.props.stage) {
-      case 'waiting':
-        break;
       case 'rolling':
         counter = player.roll;
+        break;
+      case 'counting':
+        counter = player.life;
         break;
       default:
         // Do nothing

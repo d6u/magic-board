@@ -117,9 +117,15 @@ class FirebaseService {
 
   startGame() {
     this.game.update({
-      status: 'counting',
-      black_life: 20,
-      white_life: 20,
+      status: 'counting'
+    });
+
+    this.game.child('player1').update({
+      life: 20,
+    });
+
+    this.game.child('player2').update({
+      life: 20,
     });
   }
 
