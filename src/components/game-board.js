@@ -1,6 +1,7 @@
 import React from 'react';
 import style from './game-board.scss';
 import store from '../store/store';
+import * as GameAction from '../view-actions/game';
 
 export default React.createClass({
 
@@ -46,9 +47,15 @@ export default React.createClass({
       counter = this.state.black_roll;
     }
 
+    let start = null;
+    if (this.state.status === 'rolling') {
+      start = <button className={style['board__start-btn']} onClick={this._start}>Start</button>;
+    }
+
     return (
       <div className={containerClass}>
         <h1 className={style['board__counter']}>{counter}</h1>
+        {start}
       </div>
     );
   },
@@ -61,5 +68,9 @@ export default React.createClass({
       </div>
     );
   },
+
+  _start() {
+    GameAction.start();
+  }
 
 });

@@ -1,4 +1,7 @@
+@import '../style/mixins';
+
 .board {
+  position: relative;
 }
 
 .board__upper {
@@ -28,4 +31,15 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 80px;
+}
+
+.board__start-btn {
+  @include big-button();
+  position: absolute;
+  top: 0;
+  width: 100%;
+
+  .board--white & {
+    color: black;
+  }
 }

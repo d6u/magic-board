@@ -99,6 +99,14 @@ class FirebaseService {
     GameAction.exitGame();
   }
 
+  startGame() {
+    this.game.update({
+      status: 'counting',
+      black_life: 20,
+      white_life: 20,
+    });
+  }
+
 }
 
 export default new FirebaseService();
