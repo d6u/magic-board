@@ -28,15 +28,20 @@ async function randomGameId() {
 
 class FirebaseService {
 
-  constructor() {
+  constructor({complete}) {
     let player_id = localStorage.getItem('player_id');
     if (!player_id) {
-      this.player = playersRef.push();
+      this.player = playersRef.push({
+        // Act like a placeholder, `push(null)` won't add any object to Firebase
+        version: 'v1'
+      });
       let player_id = this.player.key();
       localStorage.setItem('player_id', player_id);
     } else {
       this.player = playersRef.child(player_id);
     }
+
+    this.player.once('value', () => complete());
 
     this.player.on('value', ds => {
       PlayerAction.playerData({ player_id, ...ds.val() });
@@ -109,4 +114,11 @@ class FirebaseService {
 
 }
 
-export default new FirebaseService();
+let complete;
+let isComplete = new Promise(res => complete = res);
+
+export default new FirebaseService({complete});
+
+export function initService() {
+  return isComplete;
+}
