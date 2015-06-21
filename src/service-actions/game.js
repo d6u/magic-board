@@ -1,5 +1,9 @@
 import store from '../store/store';
 
-// export function gameData(name, isEnter) {
-//   store.routeChange(name, isEnter);
-// }
+export function gameData(change) {
+  store.gameData(change);
+}
+
+export function exitGame() {
+  store.exitGame();
+}
