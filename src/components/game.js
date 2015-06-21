@@ -1,8 +1,6 @@
-import React from 'react';
-import router from '../store/route';
-import gamesStore from '../store/games';
+import React       from 'react';
 import GameWaiting from './game-waiting';
-import style from './game.scss';
+import style       from './game.scss';
 
 export default React.createClass({
 
@@ -33,9 +31,7 @@ export default React.createClass({
   },
 
   render() {
-
-    let waiting = this.state.status === 'waiting' ? <GameWaiting gameId={this.state.id}/> : null;
-
+    let waiting = this.state.status === 'waiting' ? <GameWaiting gameId={ this.state.id }/> : null;
     return (
       <div className={ style['game'] }>
         { waiting }

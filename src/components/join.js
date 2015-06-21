@@ -1,5 +1,4 @@
 import React from 'react';
-import gamesStore from '../store/games';
 import style from './join.scss';
 
 export default React.createClass({

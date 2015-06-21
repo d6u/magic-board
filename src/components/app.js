@@ -1,6 +1,5 @@
 import React from 'react';
-import router from '../store/route';
-import gamesStore from '../store/games';
+import store from '../store/store';
 import Home from './home';
 import Join from './join';
 import Game from './game';
@@ -9,29 +8,11 @@ import style from './app.scss';
 export default React.createClass({
 
   getInitialState() {
-    return {
-      home: false,
-      game: false,
-      join: false,
-    };
-  },
-
-  componentDidMount() {
-    router.register('/', event => {
-      this.setState({home: event.type === 'enter'});
+    store.register('routeChange', routes => {
+      this.setState(routes);
     });
 
-    router.register('/join', event => {
-      this.setState({join: event.type === 'enter'});
-    });
-
-    router.register('/game/:id', event => {
-      this.setState({game: event.type === 'enter'});
-    });
-
-    gamesStore.register('new game created', ({id}) => {
-      location.hash = `/game/${id}`;
-    });
+    return store.routes;
   },
 
   render() {

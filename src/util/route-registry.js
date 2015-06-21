@@ -1,18 +1,20 @@
+const PRAMA = /:(\w+)/g;
+
 function hash() {
   return location.hash.slice(1);
 }
 
-const PRAMA = /:(\w+)/g;
-
 /**
+ * Supported patterns:
  *
  * /
  * /*
  * /items/:id/detail
  * /items/:id/*
  *
- * @param  {string} pattern
- * @return {Function}
+ * @param  {string}   pattern
+ * @return {Function} Turn url into route param object, `*` part will be assign
+ *                    as `rest` property. Return `false` if no match.
  */
 function parsePattern(pattern) {
   let raw = '';
@@ -65,12 +67,18 @@ function extractHash(url) {
   return '';
 }
 
+function formatRoot() {
+  if (!location.hash) {
+    location.hash = '/';
+  }
+}
+
 class RouteRegistry {
 
   constructor() {
     this.routes = new Map();
 
-    this.formatRoot();
+    formatRoot();
 
     window.addEventListener('hashchange', ({ oldURL, newURL }) => {
       let oldHash = extractHash(oldURL);
@@ -81,20 +89,14 @@ class RouteRegistry {
         let newParams = obj.matcher(newHash);
 
         if (oldParams) {
-          obj.callbacks.forEach(cb => cb({ type: 'leave', ...oldParams }));
+          obj.callbacks.forEach(cb => cb({ isEnter: false, ...oldParams }));
         }
 
         if (newParams) {
-          obj.callbacks.forEach(cb => cb({ type: 'enter', ...newParams }));
+          obj.callbacks.forEach(cb => cb({ isEnter: true, ...newParams }));
         }
       }
     }, false);
-  }
-
-  formatRoot() {
-    if (!location.hash) {
-      location.hash = '/';
-    }
   }
 
   /**
@@ -117,7 +119,7 @@ class RouteRegistry {
     // Trigger if already in route
     let m = matcher(hash());
     if (m) {
-      cb({ type: 'enter', ...m });
+      cb({ isEnter: true, ...m });
     }
 
     return key;
