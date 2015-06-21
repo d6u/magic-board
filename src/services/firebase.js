@@ -143,6 +143,31 @@ class FirebaseService {
     });
   }
 
+  gameOver() {
+    let winKey;
+    let loseKey;
+
+    if (store.game.player1.life > store.game.player2.life) {
+      winKey = 'player1';
+      loseKey = 'player2';
+    } else {
+      winKey = 'player2';
+      loseKey = 'player1';
+    }
+
+    this.game.child(winKey).update({
+      result: 'WIN',
+    });
+
+    this.game.child(loseKey).update({
+      result: 'LOSE',
+    });
+
+    this.game.update({
+      status: 'result',
+    });
+  }
+
 }
 
 let complete;

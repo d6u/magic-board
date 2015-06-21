@@ -25,6 +25,9 @@ export default React.createClass({
       case 'counting':
         counter = player.life;
         break;
+      case 'result':
+        counter = player.result;
+        break;
       default:
         // Do nothing
     }

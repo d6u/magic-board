@@ -7,3 +7,7 @@ export function start() {
 export function changeLife(amount) {
   firebaseService.changeLife(amount);
 }
+
+export function gameOver() {
+  firebaseService.gameOver();
+}

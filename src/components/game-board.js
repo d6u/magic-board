@@ -37,7 +37,7 @@ export default React.createClass({
     let {upper, lower} = this.players();
 
     let start = null;
-    if (this.state.status === 'rolling') {
+    if (this.state.status === 'rolling' || this.state.status === 'result') {
       start = <button className={style['board__start-btn']} onClick={this._start}>Start</button>;
     }
 
