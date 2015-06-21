@@ -2,6 +2,7 @@ import config from '../config.json';
 import * as PlayerAction from '../service-actions/player';
 import * as GameAction from '../service-actions/game';
 import * as GameUtil from '../util/game';
+import store from '../store/store';
 
 const firebase = new Firebase(config.firebase_url);
 const playersRef = firebase.child('players');
@@ -60,15 +61,33 @@ class FirebaseService {
   async newGame() {
     let id = await randomGameId();
     gamesRef.child(id).set({
-      status: 'waiting'
+      status: 'waiting',
+      playerBlack: store.player.player_id,
     });
     return id;
   }
 
   joinGame(id) {
     this.game = gamesRef.child(id);
+
+    this.game.once('value', ds => {
+
+      // If `/game/:id` is the first ever (never used this app before) route
+      // a user visited in this app `store.player` is null at this point.
+
+      let data = ds.val();
+
+      if (data.status === 'waiting' && store.player.player_id !== data.playerBlack) {
+        this.game.update({
+          playerWhite: store.player.player_id,
+          status: 'rolling',
+        });
+      }
+    });
+
     this.game.on('value', ds => {
-      GameAction.gameData({ id, ...ds.val() });
+      let data = ds.val();
+      GameAction.gameData({ id, ...data });
     });
   }
 
