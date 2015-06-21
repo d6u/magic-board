@@ -14,13 +14,20 @@ export default React.createClass({
   },
 
   render() {
-    let waiting = <GameWaiting gameId={this.state.id}/>;
-    let board = <GameBoard />;
+    let waiting = null;
+    if (this.state.status === 'waiting') {
+      waiting = <GameWaiting gameId={this.state.id}/>;
+    }
+
+    let board = null;
+    if (this.state.status !== 'waiting') {
+      board = <GameBoard />;
+    }
 
     return (
       <div className={style['game']}>
-        {this.state.status === 'waiting' ? waiting : null}
-        {this.state.status !== 'waiting' ? board : null}
+        {waiting}
+        {board}
       </div>
     );
   },
