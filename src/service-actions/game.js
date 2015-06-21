@@ -1,7 +1,7 @@
 import store from '../store/store';
 
-export function gameData(change) {
-  store.gameData(change);
+export function gameData(data) {
+  store.gameData(data);
 }
 
 export function exitGame() {

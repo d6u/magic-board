@@ -17,8 +17,8 @@ class Store extends BaseStore {
     this.player = data;
   }
 
-  gameData(change) {
-    this.game = {...this.game, ...change};
+  gameData(data) {
+    this.game = data;
     this.trigger('gameData', this.game);
   }
 

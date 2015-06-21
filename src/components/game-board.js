@@ -1,4 +1,6 @@
 import React from 'react';
+import CounterUpper from './counter-upper';
+import CounterLower from './counter-lower';
 import style from './game-board.scss';
 import store from '../store/store';
 import * as GameAction from '../view-actions/game';
@@ -6,65 +8,38 @@ import * as GameAction from '../view-actions/game';
 export default React.createClass({
 
   getInitialState() {
-    store.register('gameData', data => {
-      this.setState(data);
-    });
     return store.game;
   },
 
-  upper() {
-    if (!store.player) return;
-
-    let containerClass;
-    let counter;
-
-    if (store.player.player_id === this.state.player_black) {
-      containerClass = `${style['board__upper']} ${style['board--white']}`;
-      counter = this.state.white_roll;
-    } else {
-      containerClass = style['board__upper'];
-      counter = this.state.black_roll;
-    }
-
-    return (
-      <div className={containerClass}>
-        <h1 className={style['board__counter']}>{counter}</h1>
-      </div>
-    );
+  componentDidMount() {
+    store.register('gameData', data => {
+      this.setState(data);
+    });
   },
 
-  lower() {
-    if (!store.player) return;
+  players() {
+    if (!this.state.player1 || !this.state.player2) return {};
 
-    let containerClass;
-    let counter;
-
-    if (store.player.player_id === this.state.player_white) {
-      containerClass = `${style['board__lower']} ${style['board--white']}`;
-      counter = this.state.white_roll;
+    if (store.player.player_id === this.state.player1.id) {
+      return {
+        upper: this.state.player2,
+        lower: this.state.player1
+      };
     } else {
-      containerClass = style['board__lower'];
-      counter = this.state.black_roll;
+      return {
+        upper: this.state.player1,
+        lower: this.state.player2
+      };
     }
-
-    let start = null;
-    if (this.state.status === 'rolling') {
-      start = <button className={style['board__start-btn']} onClick={this._start}>Start</button>;
-    }
-
-    return (
-      <div className={containerClass}>
-        <h1 className={style['board__counter']}>{counter}</h1>
-        {start}
-      </div>
-    );
   },
 
   render() {
+    let {upper, lower} = this.players();
+
     return (
       <div className={style['board']}>
-        {this.upper()}
-        {this.lower()}
+        <CounterUpper playerData={upper} stage={this.state.status}/>
+        <CounterLower playerData={lower} stage={this.state.status}/>
       </div>
     );
   },

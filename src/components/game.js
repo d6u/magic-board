@@ -7,10 +7,13 @@ import store from '../store/store';
 export default React.createClass({
 
   getInitialState() {
+    return store.game;
+  },
+
+  componentDidMount() {
     store.register('gameData', data => {
       this.setState(data);
     });
-    return store.game;
   },
 
   render() {

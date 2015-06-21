@@ -67,7 +67,10 @@ class FirebaseService {
     let id = await randomGameId();
     gamesRef.child(id).set({
       status: 'waiting',
-      player_black: store.player.player_id,
+      player1: {
+        id: store.player.player_id,
+        color: 'FFFFFF',
+      }
     });
     return id;
   }
@@ -77,25 +80,33 @@ class FirebaseService {
 
     this.game.once('value', ds => {
 
-      // If `/game/:id` is the first ever (never used this app before) route
-      // a user visited in this app `store.player` is null at this point.
-
       let data = ds.val();
 
-      if (data.status === 'waiting' && store.player.player_id !== data.player_black) {
-        let [black_roll, white_roll] = GameUtil.roll();
-        this.game.update({
-          player_white: store.player.player_id,
-          status: 'rolling',
-          black_roll,
-          white_roll
-        });
+      if (data.status === 'waiting')
+      {
+        if (data.player1.id !== store.player.player_id)
+        {
+          let [roll1, roll2] = GameUtil.roll();
+
+          this.game.child('player1').update({
+            roll: roll1,
+          });
+
+          this.game.update({
+            player2: {
+              id: store.player.player_id,
+              roll: roll2,
+              color: '000000',
+            },
+            status: 'rolling',
+          });
+        }
       }
     });
 
     this.game.on('value', ds => {
       let data = ds.val();
-      GameAction.gameData({ id, ...data });
+      GameAction.gameData({id, ...data});
     });
   }
 
