@@ -1,5 +1,6 @@
 import React       from 'react';
 import GameWaiting from './game-waiting';
+import GameRolling from './game-rolling';
 import style       from './game.scss';
 import store from '../store/store';
 
@@ -14,9 +15,12 @@ export default React.createClass({
 
   render() {
     let waiting = this.state.status === 'waiting' ? <GameWaiting gameId={this.state.id}/> : null;
+    let rolling = this.state.status === 'rolling' ? <GameRolling gameId={this.state.id}/> : null;
+
     return (
       <div className={style['game']}>
         {waiting}
+        {rolling}
       </div>
     );
   },

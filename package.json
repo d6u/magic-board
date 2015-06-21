@@ -28,6 +28,6 @@
     "build:assets": "cp src/index.html public && webpack",
     "build": "npm run build:reset && npm run build:assets",
     "predev": "npm run build",
-    "dev": "browser-sync start --files 'public/*' --server 'public' & webpack -w & onchange 'src/*.html' -- cp src/index.html public"
+    "dev": "browser-sync start --files 'public/*' --server 'public' --no-ghost-mode --no-inject-changes --no-notify & webpack -w & onchange 'src/*.html' -- cp src/index.html public"
   }
 }

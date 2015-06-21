@@ -19,7 +19,7 @@ async function randomGameId() {
   let isExist;
 
   do {
-    id = GameUtil.zeroFill(GameUtil.random());
+    id = GameUtil.randomGameId();
     isExist = await gameExists(id);
   } while (isExist);
 
@@ -62,7 +62,7 @@ class FirebaseService {
     let id = await randomGameId();
     gamesRef.child(id).set({
       status: 'waiting',
-      playerBlack: store.player.player_id,
+      player_black: store.player.player_id,
     });
     return id;
   }
@@ -77,10 +77,15 @@ class FirebaseService {
 
       let data = ds.val();
 
-      if (data.status === 'waiting' && store.player.player_id !== data.playerBlack) {
+      if (data.status === 'waiting' && store.player.player_id !== data.player_black) {
+        let [black_roll, white_roll] = GameUtil.roll();
         this.game.update({
-          playerWhite: store.player.player_id,
+          player_white: store.player.player_id,
           status: 'rolling',
+          roll_results: {
+            black_roll,
+            white_roll
+          },
         });
       }
     });
