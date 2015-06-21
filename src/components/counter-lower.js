@@ -28,15 +28,9 @@ export default React.createClass({
         // Do nothing
     }
 
-    let start = null;
-    if (this.props.stage === 'rolling') {
-      start = <button className={style['board__start-btn']} onClick={this._start}>Start</button>;
-    }
-
     return (
       <div className={containerClass}>
         <h1 className={style['board__counter']}>{counter}</h1>
-        {start}
       </div>
     );
   },

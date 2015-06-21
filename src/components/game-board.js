@@ -36,10 +36,16 @@ export default React.createClass({
   render() {
     let {upper, lower} = this.players();
 
+    let start = null;
+    if (this.state.status === 'rolling') {
+      start = <button className={style['board__start-btn']} onClick={this._start}>Start</button>;
+    }
+
     return (
       <div className={style['board']}>
         <CounterUpper playerData={upper} stage={this.state.status}/>
         <CounterLower playerData={lower} stage={this.state.status}/>
+        {start}
       </div>
     );
   },
