@@ -129,6 +129,20 @@ class FirebaseService {
     });
   }
 
+  changeLife(amount) {
+    let playerKey;
+
+    if (store.player.player_id === store.game.player1.id) {
+      playerKey = 'player1';
+    } else {
+      playerKey = 'player2';
+    }
+
+    this.game.child(`${playerKey}/life`).transaction(currentLife => {
+      return currentLife + amount;
+    });
+  }
+
 }
 
 let complete;

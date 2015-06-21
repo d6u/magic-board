@@ -32,15 +32,23 @@ export default React.createClass({
 
     return (
       <div className={containerClass} ref='root'>
-        <button className={style['board__life-btn']}>
+        <button className={style['board__life-btn']} onClick={this.increaseLife}>
           <InlineSvg className={style['board__life-btn-icon']} name='plus'/>
         </button>
         <h1 className={style['board__counter']}>{counter}</h1>
-        <button className={style['board__life-btn']}>
+        <button className={style['board__life-btn']} onClick={this.decreaseLife}>
           <InlineSvg className={style['board__life-btn-icon']} name='minus'/>
         </button>
       </div>
     );
+  },
+
+  decreaseLife() {
+    GameAction.changeLife(-1);
+  },
+
+  increaseLife() {
+    GameAction.changeLife(1);
   },
 
 });
