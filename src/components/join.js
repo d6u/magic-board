@@ -4,10 +4,6 @@ import * as NavAction from '../view-actions/nav';
 
 export default React.createClass({
 
-  getInitialState() {
-    return { value: '' };
-  },
-
   input() {
     return React.findDOMNode(this.refs.input);
   },
@@ -16,13 +12,9 @@ export default React.createClass({
     let input = this.input();
 
     if (input.value.length === 4) {
-      gamesStore.hasGame(input.value)
-        .then(has => {
-          if (has) {
-            location.hash = `/game/${input.value}`;
-          } else {
-            alert('No game found!');
-          }
+      NavAction.joinGame(input.value)
+        .catch(function () {
+          alert('Game not found');
         });
     }
 
@@ -30,7 +22,7 @@ export default React.createClass({
       input.value = input.value.slice(0, 4);
     }
 
-    this.setState({ value: input.value });
+    this.setState({value: input.value});
   },
 
   boxTapped() {
@@ -41,22 +33,26 @@ export default React.createClass({
     NavAction.navTo('/');
   },
 
+  getInitialState() {
+    return {value: ''};
+  },
+
   render() {
     let boxes = [0, 1, 2, 3].map( n => {
       return (
-        <div className={ style['join__box'] } onClick={ this.boxTapped } key={ n }>
-          { this.state.value[n] }
+        <div className={style['join__box']} onClick={this.boxTapped} key={n}>
+          {this.state.value[n]}
         </div>
       );
     });
 
     return (
-      <div className={ style['join'] }>
-        <input type='text' pattern='[0-9]*' className={ style['hidden-input'] } ref='input' onChange={ this.inputChanged } />
-        <div className={ style['join__boxes'] }>
-          { boxes }
+      <div className={style['join']}>
+        <input type='text' pattern='[0-9]*' className={style['hidden-input']} ref='input' onChange={this.inputChanged}/>
+        <div className={style['join__boxes']}>
+          {boxes}
         </div>
-        <button className={ style['join__back'] } onClick={ this.back }>back</button>
+        <button className={style['join__back']} onClick={this.back}>back</button>
       </div>
     );
   },

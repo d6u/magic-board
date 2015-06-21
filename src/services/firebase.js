@@ -22,6 +22,18 @@ class FirebaseService {
     });
   }
 
+  joinGame(game_id) {
+    return new Promise((res, rej) => {
+      gamesRef.child(game_id).once('value', ds => {
+        if (ds.exists()) {
+          res();
+        } else {
+          rej();
+        }
+      });
+    });
+  }
+
 }
 
 export default new FirebaseService();
