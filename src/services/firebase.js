@@ -1,5 +1,6 @@
 import config from '../config.json';
 import * as PlayerAction from '../service-actions/player';
+import * as GameAction from '../service-actions/game';
 
 const firebase = new Firebase(config.firebase_url);
 const playersRef = firebase.child('players');
@@ -20,18 +21,33 @@ class FirebaseService {
     this.player.on('value', ds => {
       PlayerAction.playerData({ player_id, ...ds.val() });
     });
+
+    this.game = null;
   }
 
-  joinGame(game_id) {
+  couldJoinGame(game_id) {
     return new Promise((res, rej) => {
-      gamesRef.child(game_id).once('value', ds => {
-        if (ds.exists()) {
-          res();
-        } else {
-          rej();
-        }
-      });
+      gamesRef.child(game_id)
+        .once('value', ds => {
+          if (ds.exists()) {
+            res();
+          } else {
+            rej();
+          }
+        });
     });
+  }
+
+  joinGame(id) {
+    this.game = gamesRef.child(id);
+    this.game.on('value', ds => {
+      GameAction.gameData({ id, ...ds.val() });
+    });
+  }
+
+  exitGame() {
+    this.game.off('value');
+    GameAction.exitGame();
   }
 
 }

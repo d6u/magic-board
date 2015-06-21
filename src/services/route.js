@@ -1,6 +1,6 @@
 import routeRegistry from '../util/route-registry';
+import firebaseService from './firebase';
 import * as RouteAction from '../service-actions/route';
-import * as GameAction from '../service-actions/game';
 
 class RouteService {
 
@@ -16,9 +16,9 @@ class RouteService {
     routeRegistry.register('/game/:id', function ({isEnter, id}) {
       RouteAction.routeChange('game', isEnter);
       if (isEnter) {
-        GameAction.gameData({ id });
+        firebaseService.joinGame(id);
       } else {
-        GameAction.exitGame();
+        firebaseService.exitGame();
       }
     });
   }
