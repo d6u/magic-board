@@ -13,6 +13,18 @@ module.exports = {
   module: {
     loaders: [
       {
+        test: /\.(js|jsx)$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel',
+        query: {
+          optional: ['runtime', 'es7.asyncFunctions', 'es7.objectRestSpread'],
+        },
+      },
+      {
+        test: /\.json$/,
+        loader: 'json'
+      },
+      {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract(
           'style-loader',
@@ -22,14 +34,6 @@ module.exports = {
             'sass-loader?outputStyle=expanded'
           ].join('!')
         ),
-      },
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
-        query: {
-          optional: ['runtime', 'es7.asyncFunctions', 'es7.objectRestSpread'],
-        },
       },
     ],
   },
