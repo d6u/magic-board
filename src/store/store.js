@@ -4,7 +4,7 @@ class Store extends BaseStore {
 
   constructor() {
     super();
-    this.player = null;
+    this.player = {};
     this.game = {};
     this.routes = {
       home: false,
