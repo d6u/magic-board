@@ -8,5 +8,6 @@ import { initService } from './services/firebase';
 import routeService from './services/route';
 
 initService().then(function () {
+  React.initializeTouchEvents(true);
   React.render(<App />, document.getElementById('app'));
 });

@@ -58,11 +58,18 @@
   width: 40px;
   height: 40px;
   padding: 3px;
+  outline: 0;
+  -webkit-tap-highlight-color: transparent;
 
   .board--white & {
     border-color: black;
     background-color: white;
     color: black;
+  }
+
+  // Tap style
+  &:active {
+    background-color: #d6d6d6;
   }
 }
 

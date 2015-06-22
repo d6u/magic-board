@@ -6,6 +6,20 @@ import InlineSvg from './inline-svg';
 
 export default React.createClass({
 
+  getInitialState() {
+    if (this.props.playerData) {
+      return {life: this.props.playerData.life};
+    } else {
+      return {};
+    }
+  },
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      life: nextProps.playerData.life,
+    });
+  },
+
   render() {
     if (!this.props.playerData) return null;
 
@@ -29,17 +43,17 @@ export default React.createClass({
         break;
       case 'counting':
         buttonPlus = (
-          <button className={style['board__life-btn']} onClick={this.increaseLife}>
+          <button className={style['board__life-btn']} onTouchEnd={this.increaseLife}>
             <InlineSvg className={style['board__life-btn-icon']} name='plus'/>
           </button>
         );
         buttonMinus = (
-          <button className={style['board__life-btn']} onClick={this.decreaseLife}>
+          <button className={style['board__life-btn']} onTouchEnd={this.decreaseLife}>
             <InlineSvg className={style['board__life-btn-icon']} name='minus'/>
           </button>
         );
-        counter = player.life;
-        if (player.life <= 0) {
+        counter = this.state.life;
+        if (counter <= 0) {
           gameOverBtn = <button className={style['board__game-over-btn']} onClick={this.gameOver}>Game Over</button>;
         }
         break;
@@ -61,10 +75,17 @@ export default React.createClass({
   },
 
   decreaseLife() {
+    // Update life before server recognize to make UI responsive
+    this.setState({
+      life: this.state.life + 1,
+    });
     GameAction.changeLife(-1);
   },
 
   increaseLife() {
+    this.setState({
+      life: this.state.life - 1,
+    });
     GameAction.changeLife(1);
   },
 
