@@ -15,9 +15,11 @@ export default React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      life: nextProps.playerData.life,
-    });
+    if (nextProps.playerData) {
+      this.setState({
+        life: nextProps.playerData.life,
+      });
+    }
   },
 
   render() {
