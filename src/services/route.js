@@ -21,6 +21,15 @@ class RouteService {
         firebaseService.exitGame();
       }
     });
+
+    // Redirect no match route to `/`
+    routeRegistry.register(() => {
+      this.navTo('/');
+    });
+  }
+
+  navTo(path) {
+    location.hash = path;
   }
 
 }
