@@ -52,35 +52,48 @@
 }
 
 .board__life-btn {
-  border: 1px solid white;
-  background-color: black;
-  color: white;
-  width: 40px;
-  height: 40px;
-  padding: 3px;
+  width: 70px;
+  height: 70px;
+  background-color: transparent;
+  border: none;
+  position: relative;
+  padding: 15px;
+
+  // Remove default button style
   outline: 0;
   -webkit-tap-highlight-color: transparent;
 
-  .board--white & {
-    border-color: black;
-    background-color: white;
-    color: black;
-  }
-
   // Tap style
-  &:active {
+  &:active .board__life-btn-shape {
     background-color: #d6d6d6;
   }
 }
 
+.board__life-btn-shape {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border: 1px solid white;
+
+  .board--white & {
+    border-color: black;
+  }
+}
+
 .board__life-btn-icon {
+  width: 100%;
+  height: 100%;
+  padding-top: 3px; // Push svg icon to the middle
+
   svg {
     width: 32px;
     height: 32px;
   }
+
   :global .root {
     fill: white;
   }
+
   .board--white & {
     :global .root {
       fill: black;

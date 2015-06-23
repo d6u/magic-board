@@ -46,12 +46,16 @@ export default React.createClass({
       case 'counting':
         buttonPlus = (
           <button className={style['board__life-btn']} onTouchEnd={this.increaseLife}>
-            <InlineSvg className={style['board__life-btn-icon']} name='plus'/>
+            <div className={style['board__life-btn-shape']}>
+              <InlineSvg className={style['board__life-btn-icon']} name='plus'/>
+            </div>
           </button>
         );
         buttonMinus = (
           <button className={style['board__life-btn']} onTouchEnd={this.decreaseLife}>
-            <InlineSvg className={style['board__life-btn-icon']} name='minus'/>
+            <div className={style['board__life-btn-shape']}>
+              <InlineSvg className={style['board__life-btn-icon']} name='minus'/>
+            </div>
           </button>
         );
         counter = this.state.life;
