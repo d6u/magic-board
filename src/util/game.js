@@ -19,8 +19,8 @@ export function roll() {
   let b;
 
   do {
-    a = random(20);
-    b = random(20);
+    a = random(6) + 1;
+    b = random(6) + 1;
   } while (a === b);
 
   return [a, b];
