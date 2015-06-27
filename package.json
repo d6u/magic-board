@@ -13,6 +13,7 @@
     "browser-sync": "^2.7.12",
     "css-loader": "^0.15.1",
     "extract-text-webpack-plugin": "^0.8.2",
+    "immutable": "^3.7.4",
     "json-loader": "^0.5.2",
     "node-libs-browser": "^0.5.2",
     "node-sass": "^3.2.0",
@@ -30,6 +31,6 @@
     "build:static": "cp -v -R static/* public",
     "build": "npm run build:reset && npm run build:src && npm run build:static",
     "predev": "npm run build",
-    "dev": "browser-sync start --files 'public/*' --server 'public' --no-ghost-mode --no-inject-changes --no-notify & webpack -w & onchange 'static/**/*' -- npm run build:static"
+    "dev": "browser-sync start --files 'public/*' --server 'public' --no-ghost-mode --no-inject-changes --no-notify --no-open & webpack -w & onchange 'static/**/*' -- npm run build:static"
   }
 }

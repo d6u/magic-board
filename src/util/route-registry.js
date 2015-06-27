@@ -1,4 +1,4 @@
-const PRAMA = /:(\w+)/g;
+const PRAMA_REGEX = /:(\w+)/g;
 
 function hash() {
   return location.hash.slice(1);
@@ -18,7 +18,7 @@ function hash() {
  */
 function parsePattern(pattern) {
   let raw = '';
-  let pramaRegex = new RegExp(PRAMA);
+  let pramaRegex = new RegExp(PRAMA_REGEX);
   let i = 0;
   let labels = [];
   let m;
@@ -39,6 +39,8 @@ function parsePattern(pattern) {
   let regex = new RegExp(raw);
 
   return function (url) {
+    if (url == null) return false;
+
     let r = regex.exec(url);
     if (r) {
       let params = {};
@@ -60,6 +62,8 @@ function parsePattern(pattern) {
 }
 
 function extractHash(url) {
+  if (url == null) return null;
+
   let i = url.indexOf('#');
   if (i > -1) {
     return url.slice(i + 1);
@@ -67,123 +71,53 @@ function extractHash(url) {
   return '';
 }
 
-class RouteRegistry {
+function makeIterable(obj) {
+  return {
+    * [Symbol.iterator]() {
+      for (let key of Object.keys(obj)) {
+        yield [key, obj[key]];
+      }
+    }
+  };
+}
 
-  constructor() {
-    this.noMatchKey = Symbol('No match key');
-    this.routes = new Map();
-    this.routes.set(this.noMatchKey, {
-      callbacks: new Set()
-    });
+export default class RouteRegistry {
 
-    window.addEventListener('hashchange', ({ oldURL, newURL }) => {
+  constructor(routeMap) {
+    this.routes = new Set();
+
+    for (let [pattern, callback] of makeIterable(routeMap)) {
+      let matcher = parsePattern(pattern);
+      this.routes.add({matcher, callback});
+    }
+
+    const hashchangeHandler = ({oldURL, newURL}) => {
       let oldHash = extractHash(oldURL);
       let newHash = extractHash(newURL);
       let oldMatched = false;
       let newMatched = false;
 
-      for (let [key, obj] of this.routes) {
-        if (key === this.noMatchKey) continue;
+      for (let {matcher, callback} of this.routes) {
+        let oldParams = matcher(oldHash);
+        let newParams = matcher(newHash);
 
-        let oldParams = obj.matcher(oldHash);
-        let newParams = obj.matcher(newHash);
-
-        if (oldParams) {
+        if (!oldMatched && oldParams) {
+          callback({isEnter: false, ...oldParams});
           oldMatched = true;
-          obj.callbacks.forEach(cb => cb({ isEnter: false, ...oldParams }));
         }
 
-        if (newParams) {
+        if (!newMatched && newParams) {
+          callback({isEnter: true, ...newParams});
           newMatched = true;
-          obj.callbacks.forEach(cb => cb({ isEnter: true, ...newParams }));
         }
+
+        if (oldMatched && newMatched) break;
       }
+    };
 
-      if (!oldMatched) {
-        this.routes.get(this.noMatchKey).callbacks.forEach(cb => cb({isEnter: false}));
-      }
+    hashchangeHandler({newURL: location.href});
 
-      if (!newMatched) {
-        this.routes.get(this.noMatchKey).callbacks.forEach(cb => cb({isEnter: true}));
-      }
-    }, false);
-  }
-
-  /**
-   * @param  {string}   [pattern]
-   * @param  {Function} cb
-   * @return {string}
-   */
-  register(pattern, cb) {
-    if (cb) {
-      return this._registerRoute(pattern, cb);
-    } else {
-      this._registerNoMatch(pattern);
-    }
-  }
-
-  _registerRoute(pattern, cb) {
-    let matcher = parsePattern(pattern);
-    let key = pattern.toString();
-    let r = this.routes.get(key);
-
-    if (!r) {
-      r = { matcher, callbacks: new Set() };
-      this.routes.set(key, r);
-    }
-
-    r.callbacks.add(cb);
-
-    // Trigger if already in route
-    let m = matcher(hash());
-    if (m) {
-      cb({ isEnter: true, ...m });
-    }
-
-    return key;
-  }
-
-  _registerNoMatch(cb) {
-    let h = hash();
-    let matched = false;
-
-    for (let [key, r] of this.routes) {
-      if (key === this.noMatchKey) continue;
-      if (r.matcher(h)) {
-        matched = true;
-        break;
-      }
-    }
-
-    if (!matched) {
-      cb({isEnter: true});
-    }
-
-    this.routes.get(this.noMatchKey).callbacks.add(cb);
-  }
-
-  /**
-   * Deregister a route handler
-   * @param  {string}   [key] Key returned by register
-   * @param  {Function} cb
-   * @return {void}
-   */
-  deregister(key, cb) {
-    if (cb) {
-      this._deregister(key, cb);
-    } else {
-      this._deregisterNoMatch(key);
-    }
-  }
-
-  _deregister(key, cb) {
-    this.routes.get(key).callbacks.delete(cb);
-  }
-
-  _deregisterNoMatch(cb) {
-    this.routes.get(this.noMatchKey).callbacks.delete(cb);
+    window.addEventListener('hashchange', hashchangeHandler, false);
   }
 
 }
-
-export default new RouteRegistry();

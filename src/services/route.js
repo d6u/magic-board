@@ -1,35 +1,35 @@
-import routeRegistry from '../util/route-registry';
+import RouteRegistry from '../util/route-registry';
 import firebaseService from './firebase';
 import * as RouteAction from '../service-actions/route';
+import {navTo} from '../util/nav';
 
 class RouteService {
 
   constructor() {
-    routeRegistry.register('/', function ({isEnter}) {
-      RouteAction.routeChange('home', isEnter);
-    });
+    this.routeRegistry = new RouteRegistry({
 
-    routeRegistry.register('/join', function ({isEnter}) {
-      RouteAction.routeChange('join', isEnter);
-    });
+      '/'({isEnter}) {
+        RouteAction.routeChange('home', isEnter);
+      },
 
-    routeRegistry.register('/game/:id', function ({isEnter, id}) {
-      RouteAction.routeChange('game', isEnter);
-      if (isEnter) {
-        firebaseService.joinGame(id);
-      } else {
-        firebaseService.exitGame();
+      '/join'({isEnter}) {
+        RouteAction.routeChange('join', isEnter);
+      },
+
+      '/game/:id'({isEnter, id}) {
+        RouteAction.routeChange('game', isEnter);
+        if (isEnter) {
+          firebaseService.joinGame(id);
+        } else {
+          firebaseService.exitGame();
+        }
+      },
+
+      '*'({isEnter}) {
+        navTo('/');
       }
-    });
 
-    // Redirect no match route to `/`
-    routeRegistry.register(() => {
-      this.navTo('/');
     });
-  }
-
-  navTo(path) {
-    location.hash = path;
   }
 
 }
