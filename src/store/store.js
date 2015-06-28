@@ -1,11 +1,11 @@
 import BaseStore from './base';
-import Immutable from 'immutable';
+import {Map} from 'immutable';
 
 class Store extends BaseStore {
 
   constructor() {
     super();
-    this.routes = Immutable.Map();
+    this.routes = Map();
     this.player = {};
     this.game = {};
   }
@@ -20,7 +20,7 @@ class Store extends BaseStore {
   }
 
   /**
-   * @param  {Map} state An Map object contains all routes data
+   * @param  {Immutable.Map} state An Immutable Map object contains all routes data
    * @return {void}
    */
   routeChange(state) {

@@ -1,15 +1,15 @@
 import React from 'react';
 import style from './home.scss';
-import * as NavAction from '../actions/nav';
+import * as GameActions from '../actions/game';
+import * as NavActions from '../actions/nav';
 
 export default React.createClass({
 
   join() {
-    navTo('/join');
+    NavActions.navTo('/join');
   },
 
   newGame() {
-    NavAction.newGame();
   },
 
   render() {

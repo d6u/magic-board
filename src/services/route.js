@@ -2,15 +2,16 @@ import RouteRegistry from '../util/route-registry';
 import firebaseService, {initFirebaseService} from './firebase';
 import * as RouteAction from '../actions/route';
 import {makeIterable} from '../utils/collection';
+import {Map} from 'immutable';
 
 class RouteService {
 
   constructor({complete}) {
-    this.state = new Map(makeIterable({
+    this.state = Map({
       home: null,
       join: null,
       game: null
-    }));
+    });
 
     initFirebaseService()
       .then(() => this.initRegistry())
@@ -27,21 +28,21 @@ class RouteService {
     this.routeRegistry = new RouteRegistry({
 
       '/'({isEnter}) {
-        self.state.set('home', isEnter ? {} : null);
+        self.state = self.state.set('home', isEnter ? Map() : null);
         if (isEnter) {
           RouteAction.routeChange(self.state);
         }
       },
 
       '/join'({isEnter}) {
-        self.state.set('join', isEnter ? {} : null);
+        self.state = self.state.set('join', isEnter ? Map() : null);
         if (isEnter) {
           RouteAction.routeChange(self.state);
         }
       },
 
       '/game/:game_id'({isEnter, game_id}) {
-        let newState = {game_id};
+        let newState = Map({game_id});
         self.state.set('game', isEnter ? newState : null);
         if (isEnter) {
           RouteAction.routeChange(self.state);

@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './join.scss';
-import * as NavAction from '../actions/nav';
+import * as NavActions from '../actions/nav';
 
 export default React.createClass({
 
@@ -59,7 +59,7 @@ export default React.createClass({
   },
 
   back() {
-    navTo('/');
+    NavActions.navTo('/');
   },
 
 });

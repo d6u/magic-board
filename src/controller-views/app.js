@@ -9,15 +9,15 @@ export default React.createClass({
 
   getInitialState() {
     store.register('routeChange', routes => {
-      this.setState(routes);
+      this.setState({routes});
     });
-    return store.routes;
+    return {routes: store.routes};
   },
 
   render() {
-    let home = this.state.get('home') ? <Home /> : null;
-    let join = this.state.get('join') ? <Join /> : null;
-    let game = this.state.get('game') ? <Game game={this.state.get('game')} /> : null;
+    let home = this.state.routes.get('home') ? <Home /> : null;
+    let join = this.state.routes.get('join') ? <Join /> : null;
+    let game = this.state.routes.get('game') ? <Game game={this.state.routes.get('game')} /> : null;
 
     return (
       <div className={style['app']}>
