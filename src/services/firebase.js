@@ -2,6 +2,7 @@ import config from '../config.json';
 import * as PlayerAction from '../actions/player';
 import * as GameAction from '../actions/game';
 import * as GameUtil from '../util/game';
+import {Map} from 'immutable';
 
 const firebase = new Firebase(config.firebase_url);
 const playersRef = firebase.child('players');
@@ -86,23 +87,6 @@ class FirebaseService {
   }
 
   /**
-   * Test to see if game exists
-   * @param  {string}  game_id
-   * @return {Promise} Resolve with game Firebase endpoint and game data
-   */
-  couldJoinGame(game_id) {
-    return new Promise((resolve, reject) => {
-      let game = gamesRef.child(game_id).once('value', ss => {
-        if (ss.exists()) {
-          resolve([game, ss.val()]);
-        } else {
-          reject();
-        }
-      });
-    });
-  }
-
-  /**
    * Create a new game in remote
    * @return {Promise} Resolve with game_id
    */
@@ -114,7 +98,7 @@ class FirebaseService {
           let gameData = {
             status: 'waiting',
             player1: {
-              id: this.player.key(),
+              id: this.playerCache.player_id,
               color: 'FFFFFF',
             }
           };
@@ -127,12 +111,36 @@ class FirebaseService {
       });
   }
 
+  /**
+   * Test to see if game exists
+   * @param  {string}  game_id
+   * @return {Promise} Resolve with game Firebase endpoint and game data
+   */
+  couldJoinGame(game_id) {
+    return new Promise((resolve, reject) => {
+      let game = gamesRef.child(game_id);
+
+      game.once('value', ss => {
+        if (ss.exists()) {
+          resolve([game, ss.val()]);
+        } else {
+          reject(new Error(`Game ${game_id} does not exist`));
+        }
+      });
+    });
+  }
+
   joinGame(game_id) {
-    this.couldJoinGame(game_id)
+    return this.couldJoinGame(game_id)
       .then(([game, gameData]) => {
+
+        // Go ahead update store
+        GameAction.gameData(Map(gameData));
+
         this.game = game;
+
         this.game.on('value', ss => {
-          GameAction.gameData({game_id, ...ss.val()});
+          GameAction.gameData(Map({game_id, ...ss.val()}));
         });
 
         let player_id = this.playerCache.player_id;
@@ -157,10 +165,6 @@ class FirebaseService {
             });
           }
         }
-
-      })
-      .catch(function () {
-        console.error(`Game ${game_id} does not exist`);
       });
   }
 

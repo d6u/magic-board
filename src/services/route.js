@@ -43,10 +43,12 @@ class RouteService {
 
       '/game/:game_id'({isEnter, game_id}) {
         let newState = Map({game_id});
-        self.state.set('game', isEnter ? newState : null);
+        self.state = self.state.set('game', isEnter ? newState : null);
         if (isEnter) {
-          RouteAction.routeChange(self.state);
-          firebaseService.joinGame(game_id);
+          firebaseService.joinGame(game_id)
+            .then(() => {
+              RouteAction.routeChange(self.state);
+            });
         }
         // else {
         //   firebaseService.exitGame();

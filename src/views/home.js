@@ -10,6 +10,7 @@ export default React.createClass({
   },
 
   newGame() {
+    GameActions.newGame();
   },
 
   render() {

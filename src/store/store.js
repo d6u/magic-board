@@ -5,17 +5,21 @@ class Store extends BaseStore {
 
   constructor() {
     super();
-    this.routes = Map();
     this.player = {};
-    this.game = {};
+    this.routes = Map();
+    this.game = Map();
   }
 
   playerData(data) {
     this.player = data;
   }
 
+  /**
+   * @param  {Immutable.Map} data An Immutable Map object contains all game data
+   * @return {void}
+   */
   gameData(data) {
-    this.game = data;
+    this.game = this.game.merge(data);
     this.trigger('gameData', this.game);
   }
 
