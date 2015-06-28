@@ -2,7 +2,6 @@ import config from '../config.json';
 import * as PlayerAction from '../service-actions/player';
 import * as GameAction from '../service-actions/game';
 import * as GameUtil from '../util/game';
-import store from '../store/store';
 
 const firebase = new Firebase(config.firebase_url);
 const playersRef = firebase.child('players');
@@ -95,16 +94,22 @@ class FirebaseService {
     });
   }
 
-  async newGame() {
-    let id = await randomGameId();
-    gamesRef.child(id).set({
-      status: 'waiting',
-      player1: {
-        id: store.player.player_id,
-        color: 'FFFFFF',
-      }
-    });
-    return id;
+  /**
+   * Create a new game in remote
+   * @return {Promise} Resolve with game_id
+   */
+  newGame() {
+    return randomGameId()
+      .then(game_id => {
+        gamesRef.child(game_id).set({
+          status: 'waiting',
+          player1: {
+            id: this.player.key(),
+            color: 'FFFFFF',
+          }
+        });
+        return game_id;
+      });
   }
 
   joinGame(id) {
