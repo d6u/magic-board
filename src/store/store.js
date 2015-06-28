@@ -5,13 +5,13 @@ class Store extends BaseStore {
 
   constructor() {
     super();
-    this.player = {};
+    this.player = Map();
     this.routes = Map();
     this.game = Map();
   }
 
   playerData(data) {
-    this.player = data;
+    this.player = this.player.merge(data);
   }
 
   /**

@@ -80,7 +80,7 @@ class FirebaseService {
       this.player = player;
       complete();
       this.player.on('value', ss => {
-        this.playerCache = {player_id, ...ss.val()};
+        this.playerCache = Map({player_id, ...ss.val()});
         PlayerAction.playerData(this.playerCache);
       });
     });
@@ -98,7 +98,7 @@ class FirebaseService {
           let gameData = {
             status: 'waiting',
             player1: {
-              id: this.playerCache.player_id,
+              id: this.playerCache.get('player_id'),
               color: 'FFFFFF',
             }
           };
@@ -143,7 +143,7 @@ class FirebaseService {
           GameAction.gameData(Map({game_id, ...ss.val()}));
         });
 
-        let player_id = this.playerCache.player_id;
+        let player_id = this.playerCache.get('player_id');
 
         if (gameData.status === 'waiting')
         {
@@ -168,24 +168,25 @@ class FirebaseService {
       });
   }
 
+  startGame() {
+    this.game.update({
+      status: 'counting'
+    });
+
+    this.game.child('player1').update({
+      life: 20,
+    });
+
+    this.game.child('player2').update({
+      life: 20,
+    });
+  }
+
   // exitGame() {
   //   this.game.off('value');
   //   GameAction.exitGame();
   // }
 
-  // startGame() {
-  //   this.game.update({
-  //     status: 'counting'
-  //   });
-  //
-  //   this.game.child('player1').update({
-  //     life: 20,
-  //   });
-  //
-  //   this.game.child('player2').update({
-  //     life: 20,
-  //   });
-  // }
   //
   // changeLife(amount) {
   //   this.game.once('value', ss => {

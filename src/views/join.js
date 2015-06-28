@@ -1,6 +1,7 @@
 import React from 'react';
 import style from './join.scss';
 import * as NavActions from '../actions/nav';
+import * as GameActions from '../actions/game';
 
 export default React.createClass({
 
@@ -9,13 +10,14 @@ export default React.createClass({
   },
 
   render() {
-    let boxes = [0, 1, 2, 3].map( n => {
-      return (
-        <div className={style['join__box']} onClick={this.boxTapped} key={n}>
-          {this.state.value[n]}
+    let boxes = [];
+    for (let i = 0; i < 4; i++) {
+      boxes.push(
+        <div className={style['join__box']} onClick={this.boxTapped} key={i}>
+          {this.state.value[i]}
         </div>
       );
-    });
+    }
 
     return (
       <div className={style['join']}>
@@ -43,9 +45,9 @@ export default React.createClass({
     let input = this.input();
 
     if (input.value.length === 4) {
-      NavAction.joinGame(input.value)
-        .catch(function () {
-          alert('Game not found');
+      GameActions.joinGame(input.value)
+        .catch(function (err) {
+          alert(err.message);
         });
     } else if (input.value.length > 4) {
       input.value = input.value.slice(0, 4);
