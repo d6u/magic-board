@@ -1,30 +1,12 @@
 import React from 'react';
 import style from './game-board.scss';
 import store from '../store/store';
-import * as GameAction from '../actions/game';
+import * as GameActions from '../actions/game';
 import InlineSvg from '../components/inline-svg';
 
 export default React.createClass({
 
-  getInitialState() {
-    if (this.props.playerData) {
-      return {life: this.props.playerData.life};
-    } else {
-      return {};
-    }
-  },
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.playerData) {
-      this.setState({
-        life: nextProps.playerData.life,
-      });
-    }
-  },
-
   render() {
-    if (!this.props.playerData) return null;
-
     let player = this.props.playerData;
     let containerClass;
     let counter;
@@ -33,7 +15,7 @@ export default React.createClass({
     let gameOverBtn;
     let restartBtn;
 
-    if (player.color === 'FFFFFF') {
+    if (player.get('color') === 'FFFFFF') {
       containerClass = `${style['board__lower']} ${style['board--white']}`;
     } else {
       containerClass = style['board__lower'];
@@ -41,30 +23,30 @@ export default React.createClass({
 
     switch (this.props.stage) {
       case 'rolling':
-        counter = player.roll;
+        counter = player.get('roll');
         break;
       case 'counting':
         buttonPlus = (
-          <button className={style['board__life-btn']} onTouchEnd={this.increaseLife}>
+          <button className={style['board__life-btn']} onTouchEnd={this._increaseLife}>
             <div className={style['board__life-btn-shape']}>
               <InlineSvg className={style['board__life-btn-icon']} name='plus'/>
             </div>
           </button>
         );
         buttonMinus = (
-          <button className={style['board__life-btn']} onTouchEnd={this.decreaseLife}>
+          <button className={style['board__life-btn']} onTouchEnd={this._decreaseLife}>
             <div className={style['board__life-btn-shape']}>
               <InlineSvg className={style['board__life-btn-icon']} name='minus'/>
             </div>
           </button>
         );
-        counter = this.state.life;
+        counter = player.get('life');
         if (counter <= 0) {
-          gameOverBtn = <button className={style['board__game-over-btn']} onClick={this.gameOver}>Game Over</button>;
+          gameOverBtn = <button className={style['board__game-over-btn']} onClick={this._gameOver}>Game Over</button>;
         }
         break;
       case 'result':
-        counter = player.result;
+        counter = player.get('result');
         break;
       default:
         // Do nothing
@@ -80,23 +62,16 @@ export default React.createClass({
     );
   },
 
-  decreaseLife() {
-    // Update life before server recognize to make UI responsive
-    this.setState({
-      life: this.state.life + 1,
-    });
-    GameAction.changeLife(-1);
+  _decreaseLife() {
+    GameActions.changeLife(-1);
   },
 
-  increaseLife() {
-    this.setState({
-      life: this.state.life - 1,
-    });
-    GameAction.changeLife(1);
+  _increaseLife() {
+    GameActions.changeLife(1);
   },
 
-  gameOver() {
-    GameAction.gameOver();
+  _gameOver() {
+    GameActions.gameOver();
   },
 
 });

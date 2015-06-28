@@ -23,15 +23,17 @@ export function gameData(data) {
 export function start() {
   return firebaseService.startGame();
 }
+
+export function changeLife(amount) {
+  firebaseService.changeLife(amount);
+  store.changeLife(amount);
+}
 //
 // export function exitGame() {
 //   store.exitGame();
 // }
 //
 //
-// export function changeLife(amount) {
-//   firebaseService.changeLife(amount);
-// }
 //
 // export function gameOver() {
 //   firebaseService.gameOver();

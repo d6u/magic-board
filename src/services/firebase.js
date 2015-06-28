@@ -1,8 +1,8 @@
 import config from '../config.json';
 import * as PlayerAction from '../actions/player';
 import * as GameAction from '../actions/game';
-import * as GameUtil from '../util/game';
-import {Map} from 'immutable';
+import * as GameUtil from '../utils/game';
+import Immutable, {Map} from 'immutable';
 
 const firebase = new Firebase(config.firebase_url);
 const playersRef = firebase.child('players');
@@ -73,14 +73,14 @@ function syncPlayer() {
 class FirebaseService {
 
   constructor({complete}) {
-    this.playerCache = {};
-    this.gameCache = {};
+    this.playerCache = Map();
+    this.gameCache = Map();
 
     syncPlayer().then(({player_id, player}) => {
       this.player = player;
       complete();
       this.player.on('value', ss => {
-        this.playerCache = Map({player_id, ...ss.val()});
+        this.playerCache = Immutable.fromJS({player_id, ...ss.val()});
         PlayerAction.playerData(this.playerCache);
       });
     });
@@ -134,13 +134,16 @@ class FirebaseService {
     return this.couldJoinGame(game_id)
       .then(([game, gameData]) => {
 
+        this.gameCache = Immutable.fromJS(gameData);
+
         // Go ahead update store
-        GameAction.gameData(Map(gameData));
+        GameAction.gameData(this.gameCache);
 
         this.game = game;
 
         this.game.on('value', ss => {
-          GameAction.gameData(Map({game_id, ...ss.val()}));
+          this.gameCache = Immutable.fromJS({game_id, ...ss.val()});
+          GameAction.gameData(this.gameCache);
         });
 
         let player_id = this.playerCache.get('player_id');
@@ -182,28 +185,26 @@ class FirebaseService {
     });
   }
 
+  changeLife(amount) {
+    let playerKey;
+
+    if (this.gameCache.getIn(['player1', 'id']) === this.playerCache.get('player_id')) {
+      playerKey = 'player1';
+    } else {
+      playerKey = 'player2';
+    }
+
+    this.game.child(`${playerKey}/life`).transaction(currentLife => {
+      return currentLife + amount;
+    });
+  }
+
   // exitGame() {
   //   this.game.off('value');
   //   GameAction.exitGame();
   // }
 
   //
-  // changeLife(amount) {
-  //   this.game.once('value', ss => {
-  //
-  //     let playerKey;
-  //
-  //     if (ss.val().player1.id === this.player.key()) {
-  //       playerKey = 'player1';
-  //     } else {
-  //       playerKey = 'player2';
-  //     }
-  //
-  //     this.game.child(`${playerKey}/life`).transaction(currentLife => {
-  //       return currentLife + amount;
-  //     });
-  //   });
-  // }
   //
   // gameOver() {
   //   this.game.once('value', ss => {

@@ -23,6 +23,18 @@ class Store extends BaseStore {
     this.trigger('gameData', this.game);
   }
 
+  changeLife(amount) {
+    let keyPath = ['life'];
+
+    if (this.game.getIn(['player1', 'id']) === this.player.get('player_id')) {
+      keyPath.unshift('player1');
+    } else {
+      keyPath.unshift('player2');
+    }
+
+    this.game.updateIn(keyPath, life => life + amount);
+  }
+
   /**
    * @param  {Immutable.Map} state An Immutable Map object contains all routes data
    * @return {void}

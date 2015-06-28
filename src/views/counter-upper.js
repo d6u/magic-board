@@ -1,18 +1,14 @@
 import React from 'react';
 import style from './game-board.scss';
-import store from '../store/store';
-import * as GameAction from '../actions/game';
 
 export default React.createClass({
 
   render() {
-    if (!this.props.playerData) return null;
-
     let player = this.props.playerData;
     let containerClass;
     let counter;
 
-    if (player.color === 'FFFFFF') {
+    if (player.get('color') === 'FFFFFF') {
       containerClass = `${style['board__upper']} ${style['board--white']}`;
     } else {
       containerClass = style['board__upper'];
@@ -20,13 +16,13 @@ export default React.createClass({
 
     switch (this.props.stage) {
       case 'rolling':
-        counter = player.roll;
+        counter = player.get('roll');
         break;
       case 'counting':
-        counter = player.life;
+        counter = player.get('life');
         break;
       case 'result':
-        counter = player.result;
+        counter = player.get('result');
         break;
       default:
         // Do nothing

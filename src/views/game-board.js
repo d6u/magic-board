@@ -15,7 +15,7 @@ export default React.createClass({
   },
 
   players() {
-    if (store.player.get('player_id') === this.state.game.get('player1').id) {
+    if (store.player.get('player_id') === this.state.game.getIn(['player1', 'id'])) {
       return {
         upper: this.state.game.get('player2'),
         lower: this.state.game.get('player1')

@@ -1,4 +1,4 @@
-import RouteRegistry from '../util/route-registry';
+import RouteRegistry from '../utils/route-registry';
 import firebaseService, {initFirebaseService} from './firebase';
 import * as RouteAction from '../actions/route';
 import {makeIterable} from '../utils/collection';
