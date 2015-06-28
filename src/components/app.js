@@ -8,19 +8,16 @@ import style from './app.scss';
 export default React.createClass({
 
   getInitialState() {
-    return store.routes;
-  },
-
-  componentDidMount() {
     store.register('routeChange', routes => {
       this.setState(routes);
     });
+    return store.routes;
   },
 
   render() {
     let home = this.state.home ? <Home /> : null;
     let join = this.state.join ? <Join /> : null;
-    let game = this.state.game ? <Game /> : null;
+    let game = this.state.game ? <Game game={this.state.game} /> : null;
 
     return (
       <div className={ style['app'] }>

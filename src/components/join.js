@@ -1,6 +1,7 @@
 import React from 'react';
 import style from './join.scss';
 import * as NavAction from '../view-actions/nav';
+import {navTo} from '../util/nav';
 
 export default React.createClass({
 
@@ -19,11 +20,18 @@ export default React.createClass({
 
     return (
       <div className={style['join']}>
-        <input type='text' pattern='[0-9]*' className={style['hidden-input']} ref='input' onChange={this.inputChanged}/>
-        <div className={style['join__boxes']}>
-          {boxes}
-        </div>
-        <button className={style['join__back']} onClick={this.back}>back</button>
+        <input
+          type='text'
+          pattern='[0-9]*'
+          className={style['hidden-input']}
+          ref='input'
+          onChange={this.inputChanged}/>
+
+        <div className={style['join__boxes']}>{boxes}</div>
+
+        <button
+          className={style['join__back']}
+          onClick={this.back}>back</button>
       </div>
     );
   },
@@ -40,9 +48,7 @@ export default React.createClass({
         .catch(function () {
           alert('Game not found');
         });
-    }
-
-    if (input.value.length > 4) {
+    } else if (input.value.length > 4) {
       input.value = input.value.slice(0, 4);
     }
 
@@ -54,7 +60,7 @@ export default React.createClass({
   },
 
   back() {
-    NavAction.navTo('/');
+    navTo('/');
   },
 
 });

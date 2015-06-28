@@ -26,28 +26,60 @@ async function randomGameId() {
   return id;
 }
 
+/**
+ * Add new player data to remote and save id to localStorage
+ *
+ * @return {string}   .player_id
+ * @return {Firebase} .player
+ */
+function addNewPlayer() {
+  let player = playersRef.push({version: 'v1'});
+  let player_id = player.key();
+  localStorage.setItem('player_id', player_id);
+  return {player_id, player};
+}
+
+/**
+ * Will attempt to sync localStorage player_id with remote. If value cannot
+ * matched (one does not exist, or not equal), or neither player_id exists,
+ * it will try to create a new player_id and remove the mismatched one.
+ *
+ * @return {Promise} Resolve with {player_id: string, player: Firebase}
+ */
+function syncPlayer() {
+  return new Promise(resolve => {
+
+    let player_id = localStorage.getItem('player_id');
+    let player;
+
+    if (!player_id) {
+      resolve(addNewPlayer());
+    }
+    else {
+      player = playersRef.child(player_id);
+      player.once('value', ss => {
+        if (ss.exists()) {
+          resolve({player_id, player});
+        }
+        else {
+          localStorage.removeItem('player_id');
+          resolve(addNewPlayer());
+        }
+      });
+    }
+  });
+}
+
 class FirebaseService {
 
   constructor({complete}) {
-    let player_id = localStorage.getItem('player_id');
-    if (!player_id) {
-      this.player = playersRef.push({
-        // Act like a placeholder, `push(null)` won't add any object to Firebase
-        version: 'v1'
+    syncPlayer().then(({player_id, player}) => {
+      this.player = player;
+      complete();
+      this.player.on('value', ss => {
+        PlayerAction.playerData({player_id, ...ss.val()});
       });
-      let player_id = this.player.key();
-      localStorage.setItem('player_id', player_id);
-    } else {
-      this.player = playersRef.child(player_id);
-    }
-
-    this.player.once('value', () => complete());
-
-    this.player.on('value', ds => {
-      PlayerAction.playerData({ player_id, ...ds.val() });
     });
-
-    this.game = null;
   }
 
   couldJoinGame(game_id) {
@@ -170,11 +202,11 @@ class FirebaseService {
 
 }
 
-let complete;
-let isComplete = new Promise(res => complete = res);
+let _resolve;
+let loadFirebase = new Promise(resolve => _resolve = resolve);
 
-export default new FirebaseService({complete});
+export default new FirebaseService({complete: _resolve});
 
 export function initService() {
-  return isComplete;
+  return loadFirebase;
 }

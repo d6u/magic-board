@@ -1,11 +1,9 @@
+// Global style must be loaded
+import style from './global.scss';
+
 import React from 'react';
 import App from './components/app';
-
-// Initialize application
-import style from './global.scss';
-import store from './store/store';
-import { initService } from './services/firebase';
-import routeService from './services/route';
+import {initService} from './services/firebase';
 
 initService().then(function () {
   React.initializeTouchEvents(true);

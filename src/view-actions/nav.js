@@ -1,9 +1,4 @@
 import firebaseService from '../services/firebase';
-import routeService from '../services/route';
-
-export function navTo(path) {
-  routeService.navTo(path);
-}
 
 export function joinGame(game_id) {
   return firebaseService.couldJoinGame(game_id)
