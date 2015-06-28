@@ -8,8 +8,8 @@ const playersRef = firebase.child('players');
 const gamesRef = firebase.child('games');
 
 function gameExists(id) {
-  return new Promise(res => {
-    gamesRef.child(id).once('value', ds => res(ds.exists()));
+  return new Promise(resolve => {
+    gamesRef.child(id).once('value', ss => resolve(ss.exists()));
   });
 }
 
@@ -84,8 +84,8 @@ class FirebaseService {
   couldJoinGame(game_id) {
     return new Promise((res, rej) => {
       gamesRef.child(game_id)
-        .once('value', ds => {
-          if (ds.exists()) {
+        .once('value', ss => {
+          if (ss.exists()) {
             res();
           } else {
             rej();
@@ -101,49 +101,60 @@ class FirebaseService {
   newGame() {
     return randomGameId()
       .then(game_id => {
-        gamesRef.child(game_id).set({
-          status: 'waiting',
-          player1: {
-            id: this.player.key(),
-            color: 'FFFFFF',
-          }
+        return new Promise(resolve => {
+
+          let gameData = {
+            status: 'waiting',
+            player1: {
+              id: this.player.key(),
+              color: 'FFFFFF',
+            }
+          };
+
+          gamesRef.child(game_id).set(gameData, function () {
+            resolve(game_id);
+          });
+
         });
-        return game_id;
       });
   }
 
   joinGame(id) {
     this.game = gamesRef.child(id);
 
-    this.game.once('value', ds => {
+    this.game.once('value', ss => {
 
-      let data = ds.val();
+      if (ss.exists()) {
+        let gameData = ss.val();
+        let player_id = this.player.key();
 
-      if (data.status === 'waiting')
-      {
-        if (data.player1.id !== store.player.player_id)
+        if (gameData.status === 'waiting')
         {
-          let [roll1, roll2] = GameUtil.roll();
+          if (gameData.player1.id !== player_id)
+          {
+            let [roll1, roll2] = GameUtil.roll();
 
-          this.game.child('player1').update({
-            roll: roll1,
-          });
+            this.game.child('player1').update({
+              roll: roll1,
+            });
 
-          this.game.update({
-            player2: {
-              id: store.player.player_id,
-              roll: roll2,
-              color: '000000',
-            },
-            status: 'rolling',
-          });
+            this.game.update({
+              player2: {
+                id: player_id,
+                roll: roll2,
+                color: '000000',
+              },
+              status: 'rolling',
+            });
+          }
         }
-      }
-    });
 
-    this.game.on('value', ds => {
-      let data = ds.val();
-      GameAction.gameData({id, ...data});
+        this.game.on('value', ss => {
+          let data = ss.val();
+          GameAction.gameData({id, ...data});
+        });
+      }
+
     });
   }
 

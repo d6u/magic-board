@@ -25,7 +25,8 @@ class Store extends BaseStore {
 
   /**
    * Called when route action emits
-   * @param  {Immutable.Map} state An Immutable Map object contains all routes data
+   * @param  {Immutable.Map} state An Immutable Map object contains all routes
+   *                               data
    * @return {void}
    */
   routeChange(state) {

@@ -7,23 +7,21 @@ import store from '../store/store';
 export default React.createClass({
 
   getInitialState() {
-    return store.game;
-  },
-
-  componentDidMount() {
     store.register('gameData', data => {
       this.setState(data);
     });
+    return store.game;
   },
 
   render() {
     let waiting = null;
+    let board = null;
+
     if (this.state.status === 'waiting') {
       waiting = <GameWaiting gameId={this.state.id}/>;
     }
 
-    let board = null;
-    if (this.state.status !== 'waiting') {
+    if (this.state.status && this.state.status !== 'waiting') {
       board = <GameBoard />;
     }
 
