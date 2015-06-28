@@ -1,5 +1,4 @@
 import firebaseService from '../services/firebase';
-import {navTo} from '../util/nav';
 
 export function newGame() {
   firebaseService.newGame()

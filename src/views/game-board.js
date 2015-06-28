@@ -3,7 +3,7 @@ import CounterUpper from './counter-upper';
 import CounterLower from './counter-lower';
 import style from './game-board.scss';
 import store from '../store/store';
-import * as GameAction from '../view-actions/game';
+import * as GameAction from '../actions/game';
 
 export default React.createClass({
 

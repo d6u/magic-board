@@ -1,7 +1,6 @@
 import React from 'react';
 import style from './join.scss';
-import * as NavAction from '../view-actions/nav';
-import {navTo} from '../util/nav';
+import * as NavAction from '../actions/nav';
 
 export default React.createClass({
 

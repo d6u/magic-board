@@ -1,7 +1,7 @@
 import React from 'react';
 import style from './game-board.scss';
 import store from '../store/store';
-import * as GameAction from '../view-actions/game';
+import * as GameAction from '../actions/game';
 
 export default React.createClass({
 

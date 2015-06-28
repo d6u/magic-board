@@ -1,8 +1,8 @@
 import React from 'react';
 import style from './game-board.scss';
 import store from '../store/store';
-import * as GameAction from '../view-actions/game';
-import InlineSvg from './inline-svg';
+import * as GameAction from '../actions/game';
+import InlineSvg from '../components/inline-svg';
 
 export default React.createClass({
 

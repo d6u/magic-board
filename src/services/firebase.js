@@ -1,6 +1,6 @@
 import config from '../config.json';
-import * as PlayerAction from '../service-actions/player';
-import * as GameAction from '../service-actions/game';
+import * as PlayerAction from '../actions/player';
+import * as GameAction from '../actions/game';
 import * as GameUtil from '../util/game';
 
 const firebase = new Firebase(config.firebase_url);
@@ -47,7 +47,6 @@ function addNewPlayer() {
  */
 function syncPlayer() {
   return new Promise(resolve => {
-
     let player_id = localStorage.getItem('player_id');
     let player;
 
@@ -66,31 +65,40 @@ function syncPlayer() {
         }
       });
     }
+
   });
 }
 
 class FirebaseService {
 
   constructor({complete}) {
+    this.playerCache = {};
+    this.gameCache = {};
+
     syncPlayer().then(({player_id, player}) => {
       this.player = player;
       complete();
       this.player.on('value', ss => {
-        PlayerAction.playerData({player_id, ...ss.val()});
+        this.playerCache = {player_id, ...ss.val()};
+        PlayerAction.playerData(this.playerCache);
       });
     });
   }
 
+  /**
+   * Test to see if game exists
+   * @param  {string}  game_id
+   * @return {Promise} Resolve with game Firebase endpoint and game data
+   */
   couldJoinGame(game_id) {
-    return new Promise((res, rej) => {
-      gamesRef.child(game_id)
-        .once('value', ss => {
-          if (ss.exists()) {
-            res();
-          } else {
-            rej();
-          }
-        });
+    return new Promise((resolve, reject) => {
+      let game = gamesRef.child(game_id).once('value', ss => {
+        if (ss.exists()) {
+          resolve([game, ss.val()]);
+        } else {
+          reject();
+        }
+      });
     });
   }
 
@@ -119,14 +127,15 @@ class FirebaseService {
       });
   }
 
-  joinGame(id) {
-    this.game = gamesRef.child(id);
+  joinGame(game_id) {
+    this.couldJoinGame(game_id)
+      .then(([game, gameData]) => {
+        this.game = game;
+        this.game.on('value', ss => {
+          GameAction.gameData({game_id, ...ss.val()});
+        });
 
-    this.game.once('value', ss => {
-
-      if (ss.exists()) {
-        let gameData = ss.val();
-        let player_id = this.player.key();
+        let player_id = this.playerCache.player_id;
 
         if (gameData.status === 'waiting')
         {
@@ -149,79 +158,76 @@ class FirebaseService {
           }
         }
 
-        this.game.on('value', ss => {
-          let data = ss.val();
-          GameAction.gameData({id, ...data});
-        });
-      }
-
-    });
-  }
-
-  exitGame() {
-    this.game.off('value');
-    GameAction.exitGame();
-  }
-
-  startGame() {
-    this.game.update({
-      status: 'counting'
-    });
-
-    this.game.child('player1').update({
-      life: 20,
-    });
-
-    this.game.child('player2').update({
-      life: 20,
-    });
-  }
-
-  changeLife(amount) {
-    this.game.once('value', ss => {
-
-      let playerKey;
-
-      if (ss.val().player1.id === this.player.key()) {
-        playerKey = 'player1';
-      } else {
-        playerKey = 'player2';
-      }
-
-      this.game.child(`${playerKey}/life`).transaction(currentLife => {
-        return currentLife + amount;
+      })
+      .catch(function () {
+        console.error(`Game ${game_id} does not exist`);
       });
-    });
   }
 
-  gameOver() {
-    this.game.once('value', ss => {
+  // exitGame() {
+  //   this.game.off('value');
+  //   GameAction.exitGame();
+  // }
 
-      let winKey;
-      let loseKey;
-
-      if (ss.val().player1.life > ss.val().player2.life) {
-        winKey = 'player1';
-        loseKey = 'player2';
-      } else {
-        winKey = 'player2';
-        loseKey = 'player1';
-      }
-
-      this.game.child(winKey).update({
-        result: 'WIN',
-      });
-
-      this.game.child(loseKey).update({
-        result: 'LOSE',
-      });
-
-      this.game.update({
-        status: 'result',
-      });
-
-    });
-  }
+  // startGame() {
+  //   this.game.update({
+  //     status: 'counting'
+  //   });
+  //
+  //   this.game.child('player1').update({
+  //     life: 20,
+  //   });
+  //
+  //   this.game.child('player2').update({
+  //     life: 20,
+  //   });
+  // }
+  //
+  // changeLife(amount) {
+  //   this.game.once('value', ss => {
+  //
+  //     let playerKey;
+  //
+  //     if (ss.val().player1.id === this.player.key()) {
+  //       playerKey = 'player1';
+  //     } else {
+  //       playerKey = 'player2';
+  //     }
+  //
+  //     this.game.child(`${playerKey}/life`).transaction(currentLife => {
+  //       return currentLife + amount;
+  //     });
+  //   });
+  // }
+  //
+  // gameOver() {
+  //   this.game.once('value', ss => {
+  //
+  //     let winKey;
+  //     let loseKey;
+  //
+  //     if (ss.val().player1.life > ss.val().player2.life) {
+  //       winKey = 'player1';
+  //       loseKey = 'player2';
+  //     } else {
+  //       winKey = 'player2';
+  //       loseKey = 'player1';
+  //     }
+  //
+  //     this.game.child(winKey).update({
+  //       result: 'WIN',
+  //     });
+  //
+  //     this.game.child(loseKey).update({
+  //       result: 'LOSE',
+  //     });
+  //
+  //     this.game.update({
+  //       status: 'result',
+  //     });
+  //
+  //   });
+  // }
 
 }
 
@@ -230,6 +236,6 @@ let loadFirebase = new Promise(resolve => _resolve = resolve);
 
 export default new FirebaseService({complete: _resolve});
 
-export function initService() {
+export function initFirebaseService() {
   return loadFirebase;
 }

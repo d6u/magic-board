@@ -1,3 +1,5 @@
+import {makeIterable} from './collection';
+
 const PRAMA_REGEX = /:(\w+)/g;
 
 function hash() {
@@ -71,15 +73,7 @@ function extractHash(url) {
   return '';
 }
 
-function makeIterable(obj) {
-  return {
-    * [Symbol.iterator]() {
-      for (let key of Object.keys(obj)) {
-        yield [key, obj[key]];
-      }
-    }
-  };
-}
+
 
 export default class RouteRegistry {
 

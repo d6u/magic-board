@@ -1,57 +1,85 @@
 import RouteRegistry from '../util/route-registry';
-import firebaseService, {initService} from './firebase';
-import * as RouteAction from '../service-actions/route';
-import {navTo} from '../util/nav';
-import Immutable from 'immutable';
+import firebaseService, {initFirebaseService} from './firebase';
+import * as RouteAction from '../actions/route';
+import {makeIterable} from '../utils/collection';
 
 class RouteService {
 
-  constructor() {
-
-    let self = this;
-
-    this.state = new Immutable.Map({
+  constructor({complete}) {
+    this.state = new Map(makeIterable({
       home: null,
       join: null,
       game: null
-    });
+    }));
 
-    initService().then(() => {
+    initFirebaseService()
+      .then(() => this.initRegistry())
+      .then(complete);
+  }
 
-      this.routeRegistry = new RouteRegistry({
+  /**
+   * Initialize route registry property
+   * @return {void}
+   */
+  initRegistry() {
+    const self = this;
 
-        '/'({isEnter}) {
-          self.state = self.state.set('home', isEnter ? {} : null);
-          if (isEnter) {
-            RouteAction.routeChange(self.state);
-          }
-        },
+    this.routeRegistry = new RouteRegistry({
 
-        '/join'({isEnter}) {
-          self.state = self.state.set('join', isEnter ? {} : null);
-          if (isEnter) {
-            RouteAction.routeChange(self.state);
-          }
-        },
-
-        '/game/:game_id'({isEnter, game_id}) {
-          self.state = self.state.set('game', isEnter ? {game_id} : null);
-          if (isEnter) {
-            RouteAction.routeChange(self.state);
-            firebaseService.joinGame(game_id);
-          } else {
-            firebaseService.exitGame();
-          }
-        },
-
-        '*'({isEnter}) {
-          navTo('/');
+      '/'({isEnter}) {
+        self.state.set('home', isEnter ? {} : null);
+        if (isEnter) {
+          RouteAction.routeChange(self.state);
         }
+      },
 
-      });
+      '/join'({isEnter}) {
+        self.state.set('join', isEnter ? {} : null);
+        if (isEnter) {
+          RouteAction.routeChange(self.state);
+        }
+      },
+
+      '/game/:game_id'({isEnter, game_id}) {
+        let newState = {game_id};
+        self.state.set('game', isEnter ? newState : null);
+        if (isEnter) {
+          RouteAction.routeChange(self.state);
+          firebaseService.joinGame(game_id);
+        }
+        // else {
+        //   firebaseService.exitGame();
+        // }
+      },
+
+      /**
+       * For entering non-recongnized route, navigate to home
+       * @param  {Boolean} .isEnter
+       * @return {void}
+       */
+      '*'({isEnter}) {
+        if (isEnter) self.navTo('/');
+      }
+
     });
+  }
+
+  /**
+   * Navigate to a path
+   * @param  {string} path Url path
+   * @return {void}
+   */
+  navTo(path) {
+    location.hash = path;
   }
 
 }
 
-export default new RouteService();
+let _resolve;
+let loadRoute = new Promise(resolve => _resolve = resolve);
+
+export default new RouteService({complete: _resolve});
+
+export function initRouteService() {
+  return loadRoute;
+}

@@ -1,12 +1,13 @@
 import BaseStore from './base';
+import Immutable from 'immutable';
 
 class Store extends BaseStore {
 
   constructor() {
     super();
+    this.routes = Immutable.Map();
     this.player = {};
     this.game = {};
-    this.routes = {};
   }
 
   playerData(data) {
@@ -18,19 +19,12 @@ class Store extends BaseStore {
     this.trigger('gameData', this.game);
   }
 
-  exitGame() {
-    this.game = {};
-    this.trigger('gameData', this.game);
-  }
-
   /**
-   * Called when route action emits
-   * @param  {Immutable.Map} state An Immutable Map object contains all routes
-   *                               data
+   * @param  {Map} state An Map object contains all routes data
    * @return {void}
    */
   routeChange(state) {
-    this.routes = state.toJS();
+    this.routes = this.routes.merge(state);
     this.trigger('routeChange', this.routes);
   }
 

@@ -1,14 +1,17 @@
 // Global style must be loaded
 import style from './global.scss';
 
-// Must init route service
-import routeService from './services/route';
-
 import React from 'react';
-import App from './components/app';
-import {initService} from './services/firebase';
+import App from './controller-views/app';
+import {initFirebaseService} from './services/firebase';
+import {initRouteService} from './services/route';
 
-initService().then(function () {
-  React.initializeTouchEvents(true);
-  React.render(<App />, document.getElementById('app'));
-});
+Promise
+  .all([
+    initFirebaseService(),
+    initRouteService(),
+  ])
+  .then(function () {
+    React.initializeTouchEvents(true);
+    React.render(<App />, document.getElementById('app'));
+  });
