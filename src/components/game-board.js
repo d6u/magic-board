@@ -8,18 +8,13 @@ import * as GameAction from '../view-actions/game';
 export default React.createClass({
 
   getInitialState() {
-    return store.game;
-  },
-
-  componentDidMount() {
     store.register('gameData', data => {
       this.setState(data);
     });
+    return store.game;
   },
 
   players() {
-    if (!this.state.player1 || !this.state.player2) return {};
-
     if (store.player.player_id === this.state.player1.id) {
       return {
         upper: this.state.player2,
@@ -35,10 +30,14 @@ export default React.createClass({
 
   render() {
     let {upper, lower} = this.players();
-
     let start = null;
+
     if (this.state.status === 'rolling' || this.state.status === 'result') {
-      start = <button className={style['board__start-btn']} onClick={this._start}>Start</button>;
+      start = (
+        <button
+          className={style['board__start-btn']}
+          onClick={this._start}>Start</button>
+      );
     }
 
     return (

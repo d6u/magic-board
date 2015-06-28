@@ -178,41 +178,48 @@ class FirebaseService {
   }
 
   changeLife(amount) {
-    let playerKey;
+    this.game.once('value', ss => {
 
-    if (store.player.player_id === store.game.player1.id) {
-      playerKey = 'player1';
-    } else {
-      playerKey = 'player2';
-    }
+      let playerKey;
 
-    this.game.child(`${playerKey}/life`).transaction(currentLife => {
-      return currentLife + amount;
+      if (ss.val().player1.id === this.player.key()) {
+        playerKey = 'player1';
+      } else {
+        playerKey = 'player2';
+      }
+
+      this.game.child(`${playerKey}/life`).transaction(currentLife => {
+        return currentLife + amount;
+      });
     });
   }
 
   gameOver() {
-    let winKey;
-    let loseKey;
+    this.game.once('value', ss => {
 
-    if (store.game.player1.life > store.game.player2.life) {
-      winKey = 'player1';
-      loseKey = 'player2';
-    } else {
-      winKey = 'player2';
-      loseKey = 'player1';
-    }
+      let winKey;
+      let loseKey;
 
-    this.game.child(winKey).update({
-      result: 'WIN',
-    });
+      if (ss.val().player1.life > ss.val().player2.life) {
+        winKey = 'player1';
+        loseKey = 'player2';
+      } else {
+        winKey = 'player2';
+        loseKey = 'player1';
+      }
 
-    this.game.child(loseKey).update({
-      result: 'LOSE',
-    });
+      this.game.child(winKey).update({
+        result: 'WIN',
+      });
 
-    this.game.update({
-      status: 'result',
+      this.game.child(loseKey).update({
+        result: 'LOSE',
+      });
+
+      this.game.update({
+        status: 'result',
+      });
+
     });
   }
 
