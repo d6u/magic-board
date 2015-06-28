@@ -28,6 +28,10 @@ export function changeLife(amount) {
   firebaseService.changeLife(amount);
   store.changeLife(amount);
 }
+
+export function gameOver() {
+  firebaseService.gameOver();
+}
 //
 // export function exitGame() {
 //   store.exitGame();
@@ -35,6 +39,3 @@ export function changeLife(amount) {
 //
 //
 //
-// export function gameOver() {
-//   firebaseService.gameOver();
-// }

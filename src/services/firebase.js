@@ -3,6 +3,7 @@ import * as PlayerAction from '../actions/player';
 import * as GameAction from '../actions/game';
 import * as GameUtil from '../utils/game';
 import Immutable, {Map} from 'immutable';
+import merge from 'lodash/object/merge';
 
 const firebase = new Firebase(config.firebase_url);
 const playersRef = firebase.child('players');
@@ -172,16 +173,18 @@ class FirebaseService {
   }
 
   startGame() {
-    this.game.update({
-      status: 'counting'
-    });
-
-    this.game.child('player1').update({
-      life: 20,
-    });
-
-    this.game.child('player2').update({
-      life: 20,
+    this.game.transaction((current) => {
+      return merge(current, {
+        status: 'counting',
+        player1: {
+          life: 20,
+          result: null,
+        },
+        player2: {
+          life: 20,
+          result: null
+        }
+      })
     });
   }
 
@@ -199,6 +202,24 @@ class FirebaseService {
     });
   }
 
+  gameOver() {
+    let life1 = this.gameCache.getIn(['player1', 'life']);
+    let life2 = this.gameCache.getIn(['player2', 'life']);
+    let [winKey, loseKey] = life1 > life2 ? ['player1', 'player2'] : ['player2', 'player1'];
+
+    this.game.transaction((current) => {
+      return merge(current, {
+        status: 'result',
+        [winKey]: {
+          result: 'WIN'
+        },
+        [loseKey]: {
+          result: 'LOSE'
+        }
+      });
+    });
+  }
+
   // exitGame() {
   //   this.game.off('value');
   //   GameAction.exitGame();
@@ -206,34 +227,6 @@ class FirebaseService {
 
   //
   //
-  // gameOver() {
-  //   this.game.once('value', ss => {
-  //
-  //     let winKey;
-  //     let loseKey;
-  //
-  //     if (ss.val().player1.life > ss.val().player2.life) {
-  //       winKey = 'player1';
-  //       loseKey = 'player2';
-  //     } else {
-  //       winKey = 'player2';
-  //       loseKey = 'player1';
-  //     }
-  //
-  //     this.game.child(winKey).update({
-  //       result: 'WIN',
-  //     });
-  //
-  //     this.game.child(loseKey).update({
-  //       result: 'LOSE',
-  //     });
-  //
-  //     this.game.update({
-  //       status: 'result',
-  //     });
-  //
-  //   });
-  // }
 
 }
 
