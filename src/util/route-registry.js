@@ -94,24 +94,33 @@ export default class RouteRegistry {
     const hashchangeHandler = ({oldURL, newURL}) => {
       let oldHash = extractHash(oldURL);
       let newHash = extractHash(newURL);
-      let oldMatched = false;
-      let newMatched = false;
+
+      let oldParams;
+      let oldRouteCallback;
+
+      let newParams;
+      let newRouteCallback;
 
       for (let {matcher, callback} of this.routes) {
-        let oldParams = matcher(oldHash);
-        let newParams = matcher(newHash);
-
-        if (!oldMatched && oldParams) {
-          callback({isEnter: false, ...oldParams});
-          oldMatched = true;
+        if (!oldParams) {
+          oldParams = matcher(oldHash);
+          oldRouteCallback = callback;
         }
 
-        if (!newMatched && newParams) {
-          callback({isEnter: true, ...newParams});
-          newMatched = true;
+        if (!newParams) {
+          newParams = matcher(newHash);
+          newRouteCallback = callback;
         }
 
-        if (oldMatched && newMatched) break;
+        if (oldParams && newParams) break;
+      }
+
+      if (oldParams) {
+        oldRouteCallback({isEnter: false, ...oldParams});
+      }
+
+      if (newParams) {
+        newRouteCallback({isEnter: true, ...newParams});
       }
     };
 

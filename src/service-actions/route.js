@@ -1,5 +1,5 @@
 import store from '../store/store';
 
-export function routeChange(name, isEnter) {
-  store.routeChange(name, isEnter);
+export function routeChange(state) {
+  store.routeChange(state);
 }

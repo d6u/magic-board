@@ -27,9 +27,10 @@ class Store extends BaseStore {
     this.trigger('gameData', this.game);
   }
 
-  routeChange(name, isEnter) {
-    this.routes[name] = isEnter;
-    this.trigger('routeChange', this.routes);
+  routeChange(state) {
+    console.log(state.toJS());
+    // this.routes[name] = isEnter;
+    // this.trigger('routeChange', this.routes);
   }
 
 }
