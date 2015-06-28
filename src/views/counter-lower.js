@@ -3,6 +3,7 @@ import style from './game-board.scss';
 import store from '../store/store';
 import * as GameActions from '../actions/game';
 import InlineSvg from '../components/inline-svg';
+import TapButton from '../components/tap-button';
 
 export default React.createClass({
 
@@ -27,19 +28,21 @@ export default React.createClass({
         break;
       case 'counting':
         buttonPlus = (
-          <button className={style['board__life-btn']} onTouchEnd={this._increaseLife}>
+          <TapButton className={style['board__life-btn']} onTap={this._increaseLife}>
             <div className={style['board__life-btn-shape']}>
               <InlineSvg className={style['board__life-btn-icon']} name='plus'/>
             </div>
-          </button>
+          </TapButton>
         );
+
         buttonMinus = (
-          <button className={style['board__life-btn']} onTouchEnd={this._decreaseLife}>
+          <TapButton className={style['board__life-btn']} onTap={this._decreaseLife}>
             <div className={style['board__life-btn-shape']}>
               <InlineSvg className={style['board__life-btn-icon']} name='minus'/>
             </div>
-          </button>
+          </TapButton>
         );
+
         counter = player.get('life');
         if (counter <= 0) {
           gameOverBtn = <button className={style['board__game-over-btn']} onClick={this._gameOver}>Game Over</button>;
