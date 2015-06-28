@@ -32,7 +32,7 @@ function parsePattern(pattern) {
 
   raw += pattern.slice(i);
 
-  raw = raw.replace('*', '([\\w/]+)');
+  raw = raw.replace('*', '([\\w/]*)');
 
   raw += '$';
 

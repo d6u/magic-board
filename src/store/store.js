@@ -6,11 +6,7 @@ class Store extends BaseStore {
     super();
     this.player = {};
     this.game = {};
-    this.routes = {
-      home: false,
-      game: false,
-      join: false,
-    };
+    this.routes = {};
   }
 
   playerData(data) {
@@ -27,10 +23,14 @@ class Store extends BaseStore {
     this.trigger('gameData', this.game);
   }
 
+  /**
+   * Called when route action emits
+   * @param  {Immutable.Map} state An Immutable Map object contains all routes data
+   * @return {void}
+   */
   routeChange(state) {
-    console.log(state.toJS());
-    // this.routes[name] = isEnter;
-    // this.trigger('routeChange', this.routes);
+    this.routes = state.toJS();
+    this.trigger('routeChange', this.routes);
   }
 
 }
