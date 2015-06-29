@@ -5,6 +5,9 @@ import React from 'react';
 import App from './controller-views/app';
 import {initFirebaseService} from './services/firebase';
 import {initRouteService} from './services/route';
+import {initAdjustingREM} from './utils/ui';
+
+initAdjustingREM();
 
 Promise
   .all([
