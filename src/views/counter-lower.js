@@ -4,8 +4,33 @@ import InlineSvg from '../components/inline-svg';
 import style from './game-board.scss';
 import store from '../store/store';
 import * as GameActions from '../actions/game';
+import debounce from 'lodash/function/debounce';
 
 export default React.createClass({
+
+  getInitialState() {
+
+    this._resetTrackLifeChange = debounce(() => {
+      this.setState({
+        lastLife: null,
+        lifeChange: null
+      });
+    }, 2000);
+
+    return {
+      lastLife: null,
+      lifeChange: null
+    };
+  },
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.stage === 'counting') {
+      this._trackLifeChange(
+        nextProps.playerData.get('life'),
+        this.props.playerData.get('life')
+      );
+    }
+  },
 
   render() {
     let player = this.props.playerData;
@@ -15,6 +40,7 @@ export default React.createClass({
     let buttonMinus;
     let gameOverBtn;
     let restartBtn;
+    let lifeChangeTracker;
 
     if (player.get('color') === 'FFFFFF') {
       containerClass = `${style['board__lower']} ${style['board--white']}`;
@@ -51,6 +77,14 @@ export default React.createClass({
               onTap={this._gameOver}>Game Over</TapButton>
           );
         }
+
+        if (this.state.lifeChange && this.state.lifeChange !== '0') {
+          let sign = this.state.lifeChange > 0 ? '+' : '';
+          lifeChangeTracker = (
+            <div className={style['board__counter-life-tracker']}>{sign + this.state.lifeChange}</div>
+          );
+        }
+
         break;
       case 'result':
         counter = player.get('result');
@@ -62,7 +96,10 @@ export default React.createClass({
     return (
       <div className={containerClass} ref='root'>
         {buttonPlus}
-        <h1 className={style['board__counter']}>{counter}</h1>
+        <div className={style['board__counter-container']}>
+          {lifeChangeTracker}
+          <h1 className={style['board__counter']}>{counter}</h1>
+        </div>
         {buttonMinus}
         {gameOverBtn}
       </div>
@@ -75,6 +112,20 @@ export default React.createClass({
 
   _increaseLife() {
     GameActions.changeLife(1);
+  },
+
+  _trackLifeChange(newLife, curLife) {
+    if (this.state.lastLife == null) {
+      this.setState({
+        lastLife: curLife
+      });
+    }
+
+    this.setState({
+      lifeChange: newLife - this.state.lastLife
+    });
+
+    this._resetTrackLifeChange();
   },
 
   _gameOver() {
