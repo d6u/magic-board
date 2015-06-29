@@ -1,4 +1,5 @@
 import React from 'react';
+import TapButton from '../components/tap-button';
 import CounterUpper from './counter-upper';
 import CounterLower from './counter-lower';
 import style from './game-board.scss';
@@ -36,9 +37,9 @@ export default React.createClass({
         this.state.game.get('status') === 'result')
     {
       start = (
-        <button
+        <TapButton
           className={style['board__start-btn']}
-          onClick={this._start}>Start</button>
+          onTap={this._start}>Start</TapButton>
       );
     }
 

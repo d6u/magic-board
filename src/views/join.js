@@ -1,4 +1,5 @@
 import React from 'react';
+import TapButton from '../components/tap-button';
 import style from './join.scss';
 import * as NavActions from '../actions/nav';
 import * as GameActions from '../actions/game';
@@ -30,9 +31,9 @@ export default React.createClass({
 
         <div className={style['join__boxes']}>{boxes}</div>
 
-        <button
+        <TapButton
           className={style['join__back']}
-          onClick={this.back}>back</button>
+          onTap={this.back}>back</TapButton>
       </div>
     );
   },

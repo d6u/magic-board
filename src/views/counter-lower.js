@@ -1,9 +1,9 @@
 import React from 'react';
+import TapButton from '../components/tap-button';
+import InlineSvg from '../components/inline-svg';
 import style from './game-board.scss';
 import store from '../store/store';
 import * as GameActions from '../actions/game';
-import InlineSvg from '../components/inline-svg';
-import TapButton from '../components/tap-button';
 
 export default React.createClass({
 
@@ -45,7 +45,11 @@ export default React.createClass({
 
         counter = player.get('life');
         if (counter <= 0) {
-          gameOverBtn = <button className={style['board__game-over-btn']} onClick={this._gameOver}>Game Over</button>;
+          gameOverBtn = (
+            <TapButton
+              className={style['board__game-over-btn']}
+              onTap={this._gameOver}>Game Over</TapButton>
+          );
         }
         break;
       case 'result':
