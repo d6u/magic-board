@@ -2,13 +2,8 @@ import React from 'react';
 import TapButton from '../components/tap-button';
 import style from './modal-menu.scss';
 import * as UIActions from '../actions/ui';
-
-/**
- * Mobile touch friendly button
- *
- * Will do browser sniffing to determine to listen to "tap" or "click" event.
- * After trigger event, `onTap` props will called.
- */
+import * as NavActions from '../actions/nav';
+import * as GameActions from '../actions/game';
 
 export default React.createClass({
 
@@ -22,7 +17,8 @@ export default React.createClass({
         <ol className={style['modal-menu__content']}>
           <li className={style['modal-menu__item']}>
             <TapButton
-              className={style['modal-menu__item-btn']}>Back to Home</TapButton>
+              className={style['modal-menu__item-btn']}
+              onTap={this._returnHome}>Back to Home</TapButton>
           </li>
           <li className={style['modal-menu__item']}>
             <TapButton
@@ -31,7 +27,8 @@ export default React.createClass({
           </li>
           <li className={style['modal-menu__item']}>
             <TapButton
-              className={style['modal-menu__item-btn']}>Concede</TapButton>
+              className={style['modal-menu__item-btn']}
+              onTap={this._concede}>Concede</TapButton>
           </li>
         </ol>
       </div>
@@ -40,6 +37,14 @@ export default React.createClass({
 
   _dismiss() {
     UIActions.closeMenu();
-  }
+  },
+
+  _returnHome() {
+    NavActions.navTo('/');
+  },
+
+  _concede() {
+    GameActions.concede();
+  },
 
 });

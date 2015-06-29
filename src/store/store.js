@@ -45,6 +45,9 @@ class Store extends BaseStore {
   routeChange(state) {
     this.routes = this.routes.merge(state);
     this.trigger('routeChange', this.routes);
+    this.uiChange(Map({
+      showMenu: false,
+    }));
   }
 
   uiChange(change) {

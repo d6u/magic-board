@@ -1,6 +1,7 @@
 import firebaseService from '../services/firebase';
 import routeService from '../services/route';
 import store from '../store/store';
+import {Map} from 'immutable';
 
 export function newGame() {
   firebaseService.newGame()
@@ -32,10 +33,10 @@ export function changeLife(amount) {
 export function gameOver() {
   firebaseService.gameOver();
 }
-//
-// export function exitGame() {
-//   store.exitGame();
-// }
-//
-//
-//
+
+export function concede() {
+  firebaseService.concede();
+  store.uiChange(Map({
+    showMenu: false
+  }));
+}

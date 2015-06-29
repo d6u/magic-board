@@ -220,6 +220,29 @@ class FirebaseService {
     });
   }
 
+  concede() {
+    let winKey;
+    let loseKey;
+
+    if (this.gameCache.getIn(['player1', 'id']) === this.playerCache.get('player_id')) {
+      [winKey, loseKey] = ['player2', 'player1'];
+    } else {
+      [winKey, loseKey] = ['player1', 'player2'];
+    }
+
+    this.game.transaction(current => {
+      return merge(current, {
+        status: 'result',
+        [winKey]: {
+          result: 'WIN'
+        },
+        [loseKey]: {
+          result: 'LOSE'
+        }
+      });
+    });
+  }
+
   // exitGame() {
   //   this.game.off('value');
   //   GameAction.exitGame();
