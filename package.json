@@ -25,6 +25,7 @@
     "react": "^0.13.3",
     "sass-loader": "^1.0.2",
     "style-loader": "^0.12.3",
+    "ua-parser-js": "^0.7.7",
     "webpack": "^1.9.11"
   },
   "scripts": {
