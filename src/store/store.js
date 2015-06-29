@@ -8,6 +8,9 @@ class Store extends BaseStore {
     this.player = Map();
     this.routes = Map();
     this.game = Map();
+    this.ui = Map({
+      showMenu: false
+    });
   }
 
   playerData(data) {
@@ -42,6 +45,11 @@ class Store extends BaseStore {
   routeChange(state) {
     this.routes = this.routes.merge(state);
     this.trigger('routeChange', this.routes);
+  }
+
+  uiChange(change) {
+    this.ui = this.ui.merge(change);
+    this.trigger('uiChange', this.ui);
   }
 
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import TapButton from '../components/tap-button';
 import InlineSvg from '../components/inline-svg';
+import GameBoardMenu from './game-board-menu';
 import style from './game-board.scss';
 import store from '../store/store';
 import * as GameActions from '../actions/game';
@@ -94,7 +95,8 @@ export default React.createClass({
     }
 
     return (
-      <div className={containerClass} ref='root'>
+      <div className={containerClass}>
+        <GameBoardMenu />
         {buttonPlus}
         <div className={style['board__counter-container']}>
           {lifeChangeTracker}

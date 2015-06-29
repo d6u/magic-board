@@ -127,3 +127,17 @@
     color: #000000;
   }
 }
+
+.board__menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.board__menu-btn {
+  @extend .board__life-btn;
+}
+
+.board__menu-btn-icon {
+  @extend .board__life-btn-icon;
+}
