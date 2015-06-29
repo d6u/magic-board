@@ -35,6 +35,19 @@
   }
 }
 
+.board__counter-container {
+  position: relative;
+}
+
+.board__counter-life-tracker {
+  font-size: 40px;
+  position: absolute;
+  height: 50px;
+  top: -80px;
+  width: 100%;
+  text-align: center;
+}
+
 .board__counter {
   font-size: 80px;
 }
