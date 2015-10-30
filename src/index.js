@@ -2,6 +2,7 @@
 import style from './global.scss';
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import App from './controller-views/app';
 import {initFirebaseService} from './services/firebase';
 import {initRouteService} from './services/route';
@@ -15,6 +16,5 @@ Promise
     initRouteService(),
   ])
   .then(function () {
-    React.initializeTouchEvents(true);
-    React.render(<App />, document.getElementById('app'));
+    ReactDOM.render(<App />, document.getElementById('app'));
   });

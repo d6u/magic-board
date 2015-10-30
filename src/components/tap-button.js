@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Hammer from 'hammerjs';
 import {isMobile} from '../utils/browser';
 
@@ -12,7 +13,7 @@ import {isMobile} from '../utils/browser';
 export default React.createClass({
 
   componentDidMount() {
-    let el = React.findDOMNode(this);
+    let el = ReactDOM.findDOMNode(this);
 
     if (isMobile) {
       this.hammertime = new Hammer(el);
