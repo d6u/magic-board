@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import TapButton from '../components/tap-button';
 import style from './join.scss';
 import * as NavActions from '../actions/nav';
@@ -39,7 +40,7 @@ export default React.createClass({
   },
 
   input() {
-    return React.findDOMNode(this.refs.input);
+    return ReactDOM.findDOMNode(this.refs.input);
   },
 
   inputChanged() {
